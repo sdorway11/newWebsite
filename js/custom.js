@@ -1,0 +1,1 @@
+document.getElementById("enrollment_video").currentTime = .5;
