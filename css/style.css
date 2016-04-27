@@ -1,0 +1,804 @@
+/* COLORS */
+html {
+  font-size: 12px; 
+
+  }
+
+body {
+  padding-top: 115px;
+  font-size: 1.4em; 
+  font-family: 'Titillium Web', sans-serif;
+  }
+
+.header h1 {
+    letter-spacing: 4px;
+    /*color: #FFFFFF;*/
+    color: rgba(45, 45, 48, 1);
+}
+h3{
+    color: rgba(45, 45, 48,1);
+    }
+
+h2, h4{
+    color: rgba(255,255,255,1);
+}
+
+.navbar-header button {
+  background: #004271; 
+}
+
+.navbar-header button span.icon-bar {
+    background: #fff;
+}
+
+.dropdown-menu {
+    font-size: 1.1em;
+}
+	
+.footer {
+  display: block;
+  padding-top: 0px;
+  padding-bottom: 0px; 
+  font-family: 'Titillium Web', sans-serif;
+  }
+  
+  /* Hide google plus thing */
+.googleplus {
+  display: none !important;
+  }
+  
+#rights {
+	font-size: 0.8em !important;
+	text-align: center !important;
+	/*width: 100% !important;*/
+	color: white !important;
+}
+
+#footSocial{
+	/*text-align: left !important;*/
+	width: 100% !important;
+    /*left: 0px !important;*/
+    /*left: 33%;*/
+	height: 65px !important;
+	/*float: left !important;*/
+	/*position: block !important;*/
+	margin-top: 25px;
+    margin-bottom: 35px;
+}
+
+#footSocial a {
+/*	margin-left: 75px;
+	width: 50px !important;
+	height: 50px !important;
+	text-align: center !important;*/
+	color: white !important;
+	display: inline-block !important;
+	font-size: 2em !important; */
+	text-decoration:none;
+}
+
+#facebook{
+    margin-left: 0% !important;
+}
+#twitter{
+    margin-left: 50% !important;
+}
+#instagram{
+    margin-left: 0% !important;
+}
+#linkedin{
+    margin-left: 50% !important;
+}
+
+#twitter:hover {
+	color: #00aced !important;
+}
+
+#facebook:hover {
+	color: #3b5998 !important;
+}
+
+
+#linkedin:hover {
+	color: #007bb6 !important;
+}
+
+#instagram:hover {
+	color: #517fa4 !important;
+}
+
+#footAddress {
+	margin-left: 1%;
+	text-align: left !important;
+	width: 33% !important;
+	height: 75px !important;
+	float: left !important;
+	position: block !important;
+	color: white !important;
+}
+
+#footEmail {
+	text-align: left !important;
+	width: 33% !important;
+	height: 50px !important;
+	float: left !important;
+	position: block !important;
+	color: white !important;
+}
+
+#footPhone {
+	text-align: left !important;
+	width: 33% !important;
+	height: 50px !important;
+	float: left !important;
+	position: block !important;
+	color: white !important;
+}
+
+ .googleplus {
+   display: none !important;
+   }
+   
+ 
+ #topButton{
+	margin-left: 0px !important;
+ }
+ 
+ #topList {
+	text-align: left !important;
+	margin-left: 10px; 
+ }
+ 
+ .bullets{
+	 font-size: 80%;
+ }
+ 
+ /* CONTACT INFO PAGE_SPECIFIC CSS */
+ #contactForm  #Email {
+    height: 50px !important;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	margin-top: 10px !important;
+
+}
+
+ #contactForm  #Ad {
+    height: 50px !important;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 10px !important;
+
+}
+
+ #contactForm  #Phone {
+    height: 50px !important;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 10px !important;
+	margin-top: 10px !important;
+
+}
+
+ #contactForm  #Message {
+    height: 200px !important;
+	font-size: 14px;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 10px !important;
+	margin-top: 10px !important;
+
+}
+
+ #contactForm  #Name {
+    height: 50px !important;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 10px !important;
+	margin-top: 10px !important;
+
+}
+
+ #contactForm  #submitButton {
+    height: 50px !important;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	padding: 10px !important;
+	margin-top: 10px !important;
+	font-weight: bold;
+}
+ /* END CONTACT INFO PAGE_SPECIFIC CSS */
+
+ 
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+  margin-top: -45px;
+/* background: url(../images/pattern.png); 
+background-size: cover; */ }
+  .jumbotron h1 {
+    font-size: 2.1em;
+	font-family: 'Titillium Web', sans-serif;
+    font-style: none;
+    color: #004271; }
+  .jumbotron .btn {
+    margin-top: 10px; }
+
+/* Customize the nav-justified links to be fill the entire space of the .navbar */
+.nav-justified {
+    background: #fff; /*BACKGROUND COLOR OF NAVBAR*/
+    box-shadow: 0;/* 10px 15px grey; */
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0;
+}
+
+ul.nav a:hover { 
+    color: #777 !important; /*TEXT COLOR IN NAVBAR ON HOVER*/
+    background-color:  #fff; /*BACKGROUND COLOR OF SELECTION RECTANGLE*/
+}
+
+  .nav-justified > li > a {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0;
+    font-weight: bold;
+    color: #777; /*TEXT COLOR IN NAVBAR*/
+    text-align: center; 
+
+  }
+
+div.row {
+  margin-top: 0px;
+  overflow: hidden;
+  padding: 0px;
+}
+div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BOUNDARIES*/
+    padding-left: 25px;
+    padding-right: 25px;
+	/*margin-top: 15px; /*THIS WAS THE ROOT CUASE OF GRID ON MOBILE HAVING SPACE BETWEEN SOME ROWS. WE MAY NEED TO SEPERATE OUT MOBILE-VS-DESKTOP ON THIS*/
+    margin-top: 0px;
+}
+  div.row.tiles {
+    margin: 0px; }
+    div.row.tiles img {
+      width: 200px; }
+        div.row.tiles img.img_fit {
+            width: 100%;
+            /*height: 100%;*/
+        }
+  div.row img.img_fit {
+    width: 100%; 
+    /*height: 100%;*/
+  }
+  div.row div {
+    padding: 0px; /*THIS IS CAUSING THE ISSUE WITH TESTIMONIALS PAGE. 0 MAKES HOMEPAGE WORK, BUT TESTIMONIALS PAGE IMAGES CUT OFF. 30 MAKES TESTIMONIALS WORK, BUT BREAKS HOMEPAGE*/
+    border-radius: 0px;
+    font-size: 1.1em; }
+
+    div.row div .btn {
+      padding-top: 0px; }
+    div.row div.testimonial {
+      background-color: #eaeaea;
+      padding: 30px !important;
+       }
+    div.row div.contact, div.row div .form-group {
+      padding: 0px 0;
+      margin: 0; }
+    div.row div ul.tiled {
+        list-style-position: inside;
+        margin: 0;
+        padding: 0 0 0px;
+        color: #004271; }
+      div.row div ul.tiled li {
+        padding-top: 0px; }
+
+.row [class*="col-"].newTiledInfoBlack{
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+
+.row [class*="col-"].newTiledInfoWhite{
+  margin-bottom: -99999px;
+  padding-bottom: 99999px;
+}
+
+
+#carousel-home {
+  display: block;
+  margin: 0px; /*WAS 10PX AUTO*/
+  width: 100%;
+
+  }
+  
+.scholarship{
+	color: blue;
+}
+ 
+#iframeHomePage{
+	width: 100%;
+	height: 100%;
+ 	
+    padding: 0px;
+    height: 460px;
+    margin-bottom: -9px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    max-width: 99999999px;
+} 
+
+#iframeOtherPages{
+	width: 100%;
+	height: 100%;
+    height: 460px;
+	margin: 0px;
+    padding: 0px;
+    align-items: center;
+    max-width: 853px;
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.4); 
+  color: rgba(255,255,255,1);
+  text-align: center;
+  top: 65%;
+  bottom: auto;
+}
+
+.carousel-caption > p{
+    font-size: 20px;
+}
+
+.carousel-caption > h1{
+    font-size: 30px;
+}
+
+.carousel-indicators li { visibility: hidden; }
+
+.header{
+    /*background: rgba(45, 45, 48,1);*/
+    background: rgba(255, 255, 255, 1);
+    margin-bottom: 0px;
+    margin-top: -65px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    vertical-align: 50%;
+}
+
+footer .row {
+
+    background: rgba(45, 45, 48,1);
+    color: rgba(255,255,255,1);
+}
+
+
+footer .footer_nav {
+  font-size: .8em;
+  list-style-type: none;
+  list-style-position: inside;
+  margin: 0;
+  padding: 0; 
+  color: white;
+  }
+  
+  footer .footer_nav li  {
+    font-size: 1.2em;
+    display: inline-block;
+    padding: 10px;
+}
+
+footer .footer_nav a {
+	color: white;
+	text-decoration:none;
+}
+
+footer .footer_nav a:hover {
+	color: #D98D2A;
+}
+
+
+
+body.stories div.row div.img1 {
+  background: url(../images/Testimonials%201.png); }
+body.stories div.row div.img2 {
+  background: url(../images/Testimonials%202.png); }
+body.stories div.row div.img3 {
+  background: url(../images/Testimonials%203.png); }
+body.stories div.row div.img4 {
+  background: url(../images/Testimonials%204.png); }
+body.stories div.row div.img5 {
+  background: url(../images/Testimonials%205.png); }
+body.stories div.row div.img6 {
+  background: url(../images/Testimonials%206.png); }
+body.stories div.row div.img7 {
+  background: url(../images/Testimonials%207.png); }
+body.stories div.row div.img1, body.stories div.row div.img2, body.stories div.row div.img3, body.stories div.row div.img4, body.stories div.row div.img5, body.stories div.row div.img6, body.stories div.row div.img7 {
+  background-size: cover; }
+body.stories div.row div blockquote {
+  background: rgba(255, 255, 255, 0.7);
+  margin: 150px 10px 10px; }
+
+.contact {
+    background: rgba(45, 45, 48,1) !important;
+}
+
+.your-class img {
+  max-width: 100%;
+}
+
+blockquote {
+  font-style: italic;
+  border-width: 0; }
+
+.right {
+  float: right; }
+
+.left {
+  float: left; }
+
+.img_fit {
+  max-width: 100%; }
+  
+  .panel-title {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+.panel-body {
+	font-size: 1.3em;
+}
+
+.container {
+    width: 100%; 
+    /*I CHANGED THIS FROM 90% TO 100%*/
+    padding: 0px;
+    margin: 0px;
+}
+
+.onlyDisplayOnMobile{
+        visibility: hidden;
+    }
+.onlyDisplayOnDesktop{
+        visibility: visible;
+        height: inherit !important;
+    }
+
+@media screen and (min-width: 1201px) and (max-width: 1365px) {
+.carousel-caption {
+  top: 60%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+    }
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 769px) and (max-width: 1200px) {
+  /* Remove the padding we set earlier */
+    .masthead,
+    .marketing,
+    .footer {
+        padding-right: 0;
+        padding-left: 0; } 
+    .header{
+        /*background: rgba(45, 45, 48,1);*/
+        background: rgba(255, 255, 255, 1);
+        margin-bottom: -20px;
+        margin-top: -65px;
+        padding-top: 10px;
+        padding-bottom: 25px;
+        vertical-align: 0%;
+    }
+    #iframeHomePage{
+	width: 100%;
+	height: 100%;
+ 	
+    padding-top: 0x;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    height: 460px;
+    margin-bottom: -28px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    max-width: 99999999px;
+    } 
+    .onlyDisplayOnMobile{
+        visibility: visible;
+    }
+    .onlyDisplayOnDesktop{
+        visibility: hidden;
+        height: 0px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 0px;
+        margin-top: 0px;
+    }
+	  
+    #first {
+        padding-top: 0px;
+    }
+   
+    footer .footer_nav {
+        font-size: 1em;
+    }
+
+    .header{
+        /*background: rgba(45, 45, 48,1);*/
+        background: rgba(255, 255, 255, 1);
+        margin-bottom: -30px;
+        margin-top: 0px;
+        padding-top: 0px;
+        padding-bottom: 30px;
+        vertical-align: 50%;
+    }
+   
+    .jumbotron{
+        margin-bottom:0px;
+        margin-top:0px; 
+        padding-top: 0px;     
+        padding-bottom: 0px;
+    }
+    #footAddress {
+	    margin-left: 1%;
+	    text-align: left !important;
+	    width: 100% !important;
+	    height: 75px !important;
+	    float: left !important;
+	    position: block !important;
+	    color: white !important;
+        margin-bottom: 15px;
+    }
+
+    #footEmail {
+        margin-left: 1%;
+	    text-align: left !important;
+	    width: 100% !important;
+	    height: 50px !important;
+	    float: left !important;
+	    position: block !important;
+	    color: white !important;
+    }
+
+    #footPhone {
+        margin-left: 1%;
+	    text-align: left !important;
+	    width: 100% !important;
+	    height: 50px !important;
+	    float: left !important;
+	    position: block !important;
+	    color: white !important;
+    }
+
+    #facebook{
+        margin-left: 0% !important;
+    }
+    #twitter{
+        margin-left: 50% !important;
+    }
+    #instagram{
+        margin-left: 0% !important;
+        
+    }
+    #linkedin{
+        margin-left: 50% !important;
+        
+    }
+
+    #iframeHomePage{
+	width: 100%;
+	height: 100%;
+ 	
+    padding-top: 0x;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    height: 460px;
+    margin-bottom: -28px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    max-width: 99999999px;
+    } 
+    .carousel-caption {
+        top: 65%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+    }
+
+    .carousel-caption > p{
+        font-size: 10px;
+    }
+
+    .carousel-caption > h1{
+        font-size: 15px;
+    }
+
+    .onlyDisplayOnMobile{
+        visibility: visible;
+    }
+    .onlyDisplayOnDesktop{
+        visibility: hidden;
+        height: 0px !important;
+    }
+}
+	
+	
+.tech_academy {
+  height: 75px; }
+
+.modal-button-yes{
+    border: medium;
+}
+
+.modal-button-no {
+    border: medium;
+}
+
+
+ a.btn-lg {
+	display: block;
+	font-size: 1.1em;
+	font-weight: bold;
+	text-transform: uppercase;
+	padding-bottom: 0px;
+	padding-top: 0px;
+    margin: 20px auto;
+	color: #ccc;
+	background-color: #555;
+	background: -webkit-linear-gradient(#888, #555);
+	background: linear-gradient(#888, #555);
+	border: 0 none;
+	border-radius: 3px;
+	text-shadow: 0 -1px 0 #000;
+	box-shadow: 0 1px 0 #666, 0 5px 0 #444, 0 6px 6px rgba(0,0,0,0.6);
+	cursor: pointer;
+    max-width: 275px;
+    width: initial;
+    vertical-align: middle;
+ }
+
+ 
+a.btn-lg:hover, a.btn-lg:focus
+{
+	-webkit-animation: pulsate 1.2s linear infinite;
+	animation: pulsate 1.2s linear infinite;
+}
+	
+@-webkit-keyframes pulsate
+{
+	0%   { color: #ddd; text-shadow: 0 -1px 0 #000; }
+	50%  { color: #fff; text-shadow: 0 -1px 0 #444, 0 0 5px #ffd, 0 0 8px #fff; }
+	100% { color: #ddd; text-shadow: 0 -1px 0 #000; }
+}
+		
+@keyframes pulsate
+{
+	0%   { color: #ddd; text-shadow: 0 -1px 0 #000; }
+	50%  { color: #fff; text-shadow: 0 -1px 0 #444, 0 0 5px #ffd, 0 0 8px #fff; }
+	100% { color: #ddd; text-shadow: 0 -1px 0 #000; }
+}
+
+a.btn-lg:active
+{
+	color: #fff;
+	text-shadow: 0 -1px 0 #444, 0 0 5px #ffd, 0 0 8px #fff;
+	box-shadow: 0 1px 0 #666, 0 2px 0 #444, 0 2px 2px rgba(0,0,0,0.9);
+	-webkit-transform: translateY(3px);
+	transform: translateY(3px);
+	-webkit-animation: none;
+	animation: none;
+}
+
+ 
+ #dialogoverlay{
+	display: none;
+	opacity: .8;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #FFF;
+	width: 100%;
+	z-index: 10;
+}
+
+#dialogbox{
+	display: none;
+	position: fixed;
+	background: #000;
+	border-radius:7px; 
+	width:550px;
+	z-index: 10;
+}
+#dialogbox > div{ background:#FFF; margin:8px; }
+#dialogbox > div > #dialogboxhead{ background: #666; font-size:19px; padding:10px; color:#CCC; }
+#dialogbox > div > #dialogboxbody{ background:#333; padding:20px; color:#FFF; }
+#dialogbox > div > #dialogboxfoot{ background: #666; padding:10px; text-align:right; }
+
+.modal-body{
+	height: 150px;
+}
+
+#coverPic {
+    top: 25%;
+    left: 16.5%;
+	width: 66%;
+    
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	z-index: 1000;
+}
+
+
+
+.newTiledInfoBlack {
+    background-color: rgba(45, 45, 48, 1);
+    color:rgba(255,255,255,1);  
+    margin: 0px;
+}
+
+.newTiledInfoWhite {
+    margin: 0px;
+    background-color: rgba(255,255,255, 1);
+    color:rgba(0,0,0,1);  
+}
+
+.slideanim {visibility:hidden;}
+.slide {
+    /* The name of the animation */
+    animation-name: slide;
+    -webkit-animation-name: slide; 
+    /* The duration of the animation */
+    animation-duration: 1s; 
+    -webkit-animation-duration: 1s;
+    /* Make the element visible */
+    visibility: visible; 
+}
+
+@keyframes slide {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(10%);
+    } 
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0%);
+    } 
+}
+@-webkit-keyframes slide {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(10%);
+    } 
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0%);
+    }
+}
