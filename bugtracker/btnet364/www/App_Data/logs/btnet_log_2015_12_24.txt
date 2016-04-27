@@ -1,0 +1,5 @@
+2015-12-24 03:48:25 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs sql=
+select count(1) from users
+2015-12-24 03:48:25 http://www.learncodinganywhere.com/bugtracker/bugs.aspx se_id cookie is null, so redirecting
+2015-12-24 03:48:25 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+select count(1) from users

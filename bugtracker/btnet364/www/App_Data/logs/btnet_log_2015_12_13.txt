@@ -1,0 +1,70 @@
+2015-12-13 04:15:57  caught exception in util.set_context:Request is not available in this context
+2015-12-13 04:15:57  threadproc_votes
+2015-12-13 04:15:57  sql=
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[votes_view]'))
+drop view [votes_view]
+2015-12-13 04:15:57  started creating Lucene index using folder C:\inetpub\wwwroot\newWebsite\bugtracker\btnet364\www\App_Data\lucene_index
+2015-12-13 04:15:57  sql=
+
+create view votes_view as
+select bu_bug as vote_bug, sum(bu_vote) as vote_total
+from bug_user
+group by bu_bug
+having sum(bu_vote) > 0
+2015-12-13 04:15:57  sql=
+
+select bu_bug, count(1)
+from bug_user 
+where bu_vote = 1
+group by bu_bug
+2015-12-13 04:15:57 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+select count(1) from users
+2015-12-13 04:15:57  elapsed milliseconds:0004
+2015-12-13 04:15:57  sql=
+
+/* get searchable cols */					
+select sc.name
+from syscolumns sc
+inner join systypes st on st.xusertype = sc.xusertype
+inner join sysobjects so on sc.id = so.id
+where so.name = 'bugs'
+and st.[name] <> 'sysname'
+and sc.name not in ('rowguid',
+'bg_id',
+'bg_short_desc',
+'bg_reported_user',
+'bg_reported_date',
+'bg_project',
+'bg_org',
+'bg_category',
+'bg_priority',
+'bg_status',
+'bg_assigned_to_user',
+'bg_last_updated_user',
+'bg_last_updated_date',
+'bg_user_defined_attribute',
+'bg_project_custom_dropdown_value1',
+'bg_project_custom_dropdown_value2',
+'bg_project_custom_dropdown_value3',
+'bg_tags')
+and st.[name] in ('nvarchar','varchar')
+and sc.length > 30
+2015-12-13 04:15:57  elapsed milliseconds:0001
+2015-12-13 04:15:57  sql=
+
+select bg_id, 	
+
+isnull(bg_tags,'') bg_tags,
+bg_short_desc
+from bugs
+2015-12-13 04:15:57  elapsed milliseconds:0001
+2015-12-13 04:15:57  sql=
+
+select bp_bug, bp_id, 
+isnull(bp_comment_search,bp_comment) [text] 
+from bug_posts 
+where bp_type <> 'update'
+and bp_hidden_from_external_users = 0
+2015-12-13 04:15:57  elapsed milliseconds:0001
+2015-12-13 04:15:57  done creating Lucene index

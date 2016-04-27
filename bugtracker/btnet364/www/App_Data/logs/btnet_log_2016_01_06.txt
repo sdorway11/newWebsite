@@ -1,0 +1,4823 @@
+2016-01-06 00:43:45 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 se_id cookie is null, so redirecting
+2016-01-06 00:43:45 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+select count(1) from users
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+select count(1) from users
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+
+select us_username, us_id, us_password, isnull(us_salt,0) us_salt, us_active
+from users
+where us_username = N'devinr'
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 elapsed milliseconds:0000
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+update users set us_most_recent_login_datetime = getdate() where us_id = 3
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+select us_id from users where us_username = N'devinr'
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 elapsed milliseconds:0000
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 guid=340f1ea9-04c0-4a33-8671-e6cff192a91c
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 sql=
+insert into sessions (se_id, se_user) values('340f1ea9-04c0-4a33-8671-e6cff192a91c', 3)
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/edit_bug.aspx&qs=id=111 AppPath:/bugtracker
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c'
+and us_active = 1
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 elapsed milliseconds:0031
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 111 and bu_user = 3)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(111, 3, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 111 and bu_user = 3 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	4 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 3
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 3
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 3
+where bg_id = 111
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 elapsed milliseconds:0001
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 3
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 elapsed milliseconds:0002
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (0 <> 0 or 4 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 0
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 elapsed milliseconds:0000
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 111
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ and a.bp_hidden_from_external_users = 0
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 00:43:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=111 elapsed milliseconds:0000
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c'
+and us_active = 1
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0002
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 3
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0003
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+select top 1 pj_id from projects where pj_default = 1 order by pj_name;
+select top 1 ct_id from categories where ct_default = 1 order by ct_name;
+select top 1 pr_id from priorities where pr_default = 1 order by pr_name;
+select top 1 st_id from statuses where st_default = 1 order by st_name;
+select top 1 udf_id from user_defined_attribute where udf_default = 1 order by udf_name;
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0001
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (0 <> 0 or 4 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 0
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 00:43:59 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0001
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c'
+and us_active = 1
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0000
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 0 and bu_user = 3)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(0, 3, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 0 and bu_user = 3 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	4 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 3
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 3
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 3
+where bg_id = 0
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0000
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* validate org versus assigned_to */
+select case when og_other_orgs_permission_level <> 0
+or 4 = og_id then 1
+else 0 end as [answer]
+from users
+inner join orgs on us_org = og_id
+where us_id = 3
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+insert into bugs
+					(bg_short_desc,
+					bg_tags,
+					bg_reported_user,
+					bg_last_updated_user,
+					bg_reported_date,
+					bg_last_updated_date,
+					bg_project,
+					bg_org,
+					bg_category,
+					bg_priority,
+					bg_status,
+					bg_assigned_to_user,
+					bg_user_defined_attribute,
+					bg_project_custom_dropdown_value1,
+					bg_project_custom_dropdown_value2,
+					bg_project_custom_dropdown_value3
+					)
+					values (N'Letter formatting needs to be prettier (Bret bug)', N'', 3,  3, getdate(), getdate(),
+					0, 4,
+					1, 1, 1, 3, 0,
+					N'',N'',N'' )
+select scope_identity()
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+declare @now datetime
+set @now = getdate()
+
+insert into bug_posts
+(bp_bug, bp_user, bp_date, bp_comment, bp_comment_search, bp_email_from, bp_email_cc, bp_type, bp_content_type,
+bp_hidden_from_external_users)
+values(
+124,
+3,
+@now,
+N'<p>
+	Letters aren&#39;t formatted like a letter would be for the most part. We can do better with prettier formatting at the top. Full date with the month, centering or justifying it. Right now it looks just like a form.&nbsp;</p>
+<p>
+	Also, there are bugs on it. Red lettering up top (from spire) and in the middle, red lettering with the message &quot;<span style="font-family: Helvetica;">/TEXT FOR ACCOUNT NOT LEGITMATE&quot;</span></p>
+<p>
+	&nbsp;</p>
+<p>
+	&nbsp;</p>
+',
+N'
+	Letters aren''t formatted like a letter would be for the most part. We can do better with prettier formatting at the top. Full date with the month, centering or justifying it. Right now it looks just like a form. 
+
+	Also, there are bugs on it. Red lettering up top (from spire) and in the middle, red lettering with the message "/TEXT FOR ACCOUNT NOT LEGITMATE"
+
+	 
+
+	 
+',
+null,
+N'',
+N'comment',
+N'text/html',
+0)
+select scope_identity();
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+declare @pj int
+select @pj = bg_project from bugs where bg_id = 124
+
+delete from bug_subscriptions
+where bs_bug = 124
+and bs_user in
+(select x.pu_user
+from projects
+left outer join project_user_xref x on pu_project = pj_id
+where pu_project = @pj
+and isnull(pu_permission_level,2) = 0)
+
+delete from bug_subscriptions
+where bs_bug = 124
+and bs_user in
+(select us_id from users
+ inner join orgs on us_org = og_id
+ inner join bugs on bg_id = 124
+ where og_other_orgs_permission_level = 0
+ and bg_org <> og_id)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 124, us_id
+from users
+inner join orgs on us_org = og_id
+inner join bugs on bg_id = 124
+left outer join project_user_xref on pu_project = @pj and pu_user = us_id
+where us_auto_subscribe = 1
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and us_id not in
+(select bs_user from bug_subscriptions
+where bs_bug = 124)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 124, pj_default_user
+from projects
+inner join users on pj_default_user = us_id
+where pj_id = @pj
+and pj_default_user <> 0
+and pj_auto_subscribe_default_user = 1
+and us_active = 1
+and pj_default_user not in
+(select bs_user from bug_subscriptions
+where bs_bug = 124)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 124, pu_user from project_user_xref
+inner join users on pu_user = us_id
+inner join orgs on us_org = og_id
+inner join bugs on bg_id = 124
+where pu_auto_subscribe = 1
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and pu_project = @pj
+and pu_user not in
+(select bs_user from bug_subscriptions
+where bs_bug = 124)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 124, us_id
+from users
+inner join bugs on bg_id = 124
+inner join orgs on us_org = og_id
+left outer join project_user_xref on pu_project = @pj and pu_user = us_id
+where ((us_auto_subscribe_own_bugs = 1 and bg_assigned_to_user = us_id)
+or
+(us_auto_subscribe_reported_bugs = 1 and bg_reported_user = us_id))
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and us_id not in
+(select bs_user from bug_subscriptions
+where bs_bug = 124)
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* get notification emails for all subscribers */
+select us_email, us_id, us_admin, og.*
+from bug_subscriptions
+inner join users on bs_user = us_id
+inner join orgs og on us_org = og_id
+inner join bugs on bg_id = bs_bug
+left outer join project_user_xref on pu_user = us_id and pu_project = bg_project
+where us_email is not null
+and us_enable_notifications = 1
+-- $status_change
+and us_active = 1
+and us_email <> ''
+and (   (1 <= us_reported_notifications and bg_reported_user = bs_user)
+or (1 <= us_assigned_notifications and bg_assigned_to_user = bs_user)
+or (1 <= us_assigned_notifications and 0 = bs_user)
+or (1 <= us_subscribed_notifications))
+and
+case
+when
+us_org <> bg_org
+and og_other_orgs_permission_level < 2
+and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+	then og_other_orgs_permission_level
+else
+isnull(pu_permission_level,2)
+end <> 0
+and bs_bug = 124
+and (us_id <> 3 or isnull(us_send_notifications_to_self,0) = 1)
+2016-01-06 00:46:08  started updating Lucene index using folder C:\inetpub\wwwroot\newWebsite\bugtracker\btnet364\www\App_Data\lucene_index
+2016-01-06 00:46:08  sql=
+
+/* get searchable cols */					
+select sc.name
+from syscolumns sc
+inner join systypes st on st.xusertype = sc.xusertype
+inner join sysobjects so on sc.id = so.id
+where so.name = 'bugs'
+and st.[name] <> 'sysname'
+and sc.name not in ('rowguid',
+'bg_id',
+'bg_short_desc',
+'bg_reported_user',
+'bg_reported_date',
+'bg_project',
+'bg_org',
+'bg_category',
+'bg_priority',
+'bg_status',
+'bg_assigned_to_user',
+'bg_last_updated_user',
+'bg_last_updated_date',
+'bg_user_defined_attribute',
+'bg_project_custom_dropdown_value1',
+'bg_project_custom_dropdown_value2',
+'bg_project_custom_dropdown_value3',
+'bg_tags')
+and st.[name] in ('nvarchar','varchar')
+and sc.length > 30
+2016-01-06 00:46:08  elapsed milliseconds:0000
+2016-01-06 00:46:08  sql=
+
+select bg_id, 
+
+isnull(bg_tags,'') bg_tags,
+bg_short_desc    
+from bugs where bg_id = 124
+2016-01-06 00:46:08  elapsed milliseconds:0001
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0020
+2016-01-06 00:46:08  sql=
+
+select bp_bug, bp_id, 
+isnull(bp_comment_search,bp_comment) [text] 
+from bug_posts 
+where bp_type <> 'update'
+and bp_hidden_from_external_users = 0
+and bp_bug = 124
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 124 and bu_user = 3)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(124, 3, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 124 and bu_user = 3 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	4 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 3
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 3
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 3
+where bg_id = 124
+2016-01-06 00:46:08  elapsed milliseconds:0003
+2016-01-06 00:46:08  done updating Lucene index
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0043
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 124
+and a.bp_parent is null
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 00:46:08 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=0 elapsed milliseconds:0011
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '340f1ea9-04c0-4a33-8671-e6cff192a91c'
+and us_active = 1
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 elapsed milliseconds:0001
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 124 and bu_user = 3)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(124, 3, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 124 and bu_user = 3 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	4 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 3
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 3
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 3
+where bg_id = 124
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 elapsed milliseconds:0001
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 3
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 elapsed milliseconds:0001
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (0 <> 0 or 4 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 0
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 elapsed milliseconds:0000
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 124
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ and a.bp_hidden_from_external_users = 0
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 00:46:09 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=124 elapsed milliseconds:0015
+2016-01-06 00:47:08  actually_send_the_emails
+2016-01-06 00:47:08  sql=
+select * from queued_notifications where qn_status = N'not sent' and qn_retries < 3
+2016-01-06 00:47:08  elapsed milliseconds:0002
+2016-01-06 00:47:08  sending email to erik.d.gross@gmail.com
+2016-01-06 00:47:08  to email addr: erik.d.gross@gmail.com
+2016-01-06 00:47:09  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 00:47:09  TO:erik.d.gross@gmail.com
+2016-01-06 00:47:09  FROM:notify@techacademytracker.com
+2016-01-06 00:47:09  SUBJECT:Item:89 was updated - Mobile Staff Page: There is excessive white space on various points on the page (for example: between staff photos, text, etc.) Please make it tighter  (DO NOT EDIT THIS:89)
+2016-01-06 00:47:09  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 00:47:09  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 329
+2016-01-06 00:47:09  sending email to jackstanleyportland@gmail.com
+2016-01-06 00:47:09  to email addr: jackstanleyportland@gmail.com
+2016-01-06 00:47:09  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 00:47:09  TO:jackstanleyportland@gmail.com
+2016-01-06 00:47:09  FROM:notify@techacademytracker.com
+2016-01-06 00:47:09  SUBJECT:Item:89 was updated - Mobile Staff Page: There is excessive white space on various points on the page (for example: between staff photos, text, etc.) Please make it tighter  (DO NOT EDIT THIS:89)
+2016-01-06 00:47:09  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 00:47:09  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 330
+2016-01-06 00:47:09  sending email to erik.d.gross@gmail.com
+2016-01-06 00:47:09  to email addr: erik.d.gross@gmail.com
+2016-01-06 00:47:09  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 00:47:09  TO:erik.d.gross@gmail.com
+2016-01-06 00:47:09  FROM:notify@techacademytracker.com
+2016-01-06 00:47:09  SUBJECT:Item:123 was updated - Logout Button needs to be implemented  (DO NOT EDIT THIS:123)
+2016-01-06 00:47:09  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 00:47:09  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 331
+2016-01-06 00:47:09  sending email to erik.d.gross@gmail.com
+2016-01-06 00:47:09  to email addr: erik.d.gross@gmail.com
+2016-01-06 00:47:09  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 00:47:09  TO:erik.d.gross@gmail.com
+2016-01-06 00:47:09  FROM:notify@techacademytracker.com
+2016-01-06 00:47:09  SUBJECT:Item:124 was added - Letter formatting needs to be prettier (Bret bug)  (DO NOT EDIT THIS:124)
+2016-01-06 00:47:09  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 00:47:09  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 332
+2016-01-06 03:47:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+select count(1) from users
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+select count(1) from users
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+
+select us_username, us_id, us_password, isnull(us_salt,0) us_salt, us_active
+from users
+where us_username = N'alexa'
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx elapsed milliseconds:0002
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+update users set us_most_recent_login_datetime = getdate() where us_id = 20
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+select us_id from users where us_username = N'alexa'
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx elapsed milliseconds:0000
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx guid=e0835644-6bb1-4e10-9b5c-a0608eb3a2ea
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx sql=
+insert into sessions (se_id, se_user) values('e0835644-6bb1-4e10-9b5c-a0608eb3a2ea', 20)
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/default.aspx AppPath:/bugtracker
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0011
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx sql=
+/* query dropdown */
+select qu_id, qu_desc
+from queries
+where (isnull(qu_user,0) = 0 and isnull(qu_org,0) = 0)
+or isnull(qu_user,0) = 20
+or isnull(qu_org,0) = 1
+order by qu_desc
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0002
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx sql=
+select qu_id, qu_sql from queries where qu_id in
+			(select us_default_query from users where us_id = 20)
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0002
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx sql=
+select isnull(pr_background_color,'#ffffff'), bg_id [id], isnull(bu_flag,0) [$FLAG], 
+ bg_short_desc [desc], isnull(pj_name,'') [project], isnull(og_name,'') [organization], isnull(ct_name,'') [category], rpt.us_username [reported by],
+ bg_reported_date [reported on], isnull(bu_seen,0) [$SEEN], isnull(pr_name,'') [priority], isnull(asg.us_username,'') [assigned to],
+ isnull(st_name,'') [status], isnull(lu.us_username,'') [last updated by], bg_last_updated_date [last updated on]
+ from bugs 
+ left outer join bug_user on bu_bug = bg_id and bu_user = 20 
+ left outer join users rpt on rpt.us_id = bg_reported_user
+ left outer join users asg on asg.us_id = bg_assigned_to_user
+ left outer join users lu on lu.us_id = bg_last_updated_user
+ left outer join projects on pj_id = bg_project
+ left outer join orgs on og_id = bg_org
+ left outer join categories on ct_id = bg_category
+ left outer join priorities on pr_id = bg_priority
+ left outer join statuses on st_id = bg_status
+  /* altered - just order by  */ WHERE  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 20
+					and pu_permission_level = 0)) order by bg_id desc
+2016-01-06 03:48:33 http://www.learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0029
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0002
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 20
+where bg_id = 124
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0004
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 124
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 03:49:19 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0013
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0001
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 20
+where bg_id = 124
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0000
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 124
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 03:49:21 http://www.learncodinganywhere.com/bugtracker/ajax.aspx?bugid=124 elapsed milliseconds:0001
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0001
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 20
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0017
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+select top 1 pj_id from projects where pj_default = 1 order by pj_name;
+select top 1 ct_id from categories where ct_default = 1 order by ct_name;
+select top 1 pr_id from priorities where pr_default = 1 order by pr_name;
+select top 1 st_id from statuses where st_default = 1 order by st_name;
+select top 1 udf_id from user_defined_attribute where udf_default = 1 order by udf_name;
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (2 <> 0 or 1 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 0
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 03:50:16 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0001
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (2 <> 0 or 1 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 7
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0001
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+select isnull(pj_default_user,0)
+					from projects
+					where pj_id = 7
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+select
+			isnull(pj_enable_custom_dropdown1,0) [pj_enable_custom_dropdown1],
+			isnull(pj_enable_custom_dropdown2,0) [pj_enable_custom_dropdown2],
+			isnull(pj_enable_custom_dropdown3,0) [pj_enable_custom_dropdown3],
+			isnull(pj_custom_dropdown_label1,'') [pj_custom_dropdown_label1],
+			isnull(pj_custom_dropdown_label2,'') [pj_custom_dropdown_label2],
+			isnull(pj_custom_dropdown_label3,'') [pj_custom_dropdown_label3],
+			isnull(pj_custom_dropdown_values1,'') [pj_custom_dropdown_values1],
+			isnull(pj_custom_dropdown_values2,'') [pj_custom_dropdown_values2],
+			isnull(pj_custom_dropdown_values3,'') [pj_custom_dropdown_values3]
+			from projects where pj_id = 7
+2016-01-06 03:50:26 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0001
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 0 and bu_user = 20)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(0, 20, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 0 and bu_user = 20 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	1 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 20
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 20
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 20
+where bg_id = 0
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0041
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* validate org versus assigned_to */
+select case when og_other_orgs_permission_level <> 0
+or 1 = og_id then 1
+else 0 end as [answer]
+from users
+inner join orgs on us_org = og_id
+where us_id = 19
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+insert into bugs
+					(bg_short_desc,
+					bg_tags,
+					bg_reported_user,
+					bg_last_updated_user,
+					bg_reported_date,
+					bg_last_updated_date,
+					bg_project,
+					bg_org,
+					bg_category,
+					bg_priority,
+					bg_status,
+					bg_assigned_to_user,
+					bg_user_defined_attribute,
+					bg_project_custom_dropdown_value1,
+					bg_project_custom_dropdown_value2,
+					bg_project_custom_dropdown_value3
+					)
+					values (N'More prominent "Reviewer Guide" Button', N'', 20,  20, getdate(), getdate(),
+					7, 1,
+					2, 2, 1, 19, 0,
+					N'',N'',N'' )
+select scope_identity()
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+declare @now datetime
+set @now = getdate()
+
+insert into bug_posts
+(bp_bug, bp_user, bp_date, bp_comment, bp_comment_search, bp_email_from, bp_email_cc, bp_type, bp_content_type,
+bp_hidden_from_external_users)
+values(
+125,
+20,
+@now,
+N'This is great that it''s there, it''d be good to have a more prominent as i think it''s super key that they look at it!',
+N'This is great that it''s there, it''d be good to have a more prominent as i think it''s super key that they look at it!',
+null,
+N'',
+N'comment',
+N'text/plain',
+0)
+select scope_identity();
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+declare @pj int
+select @pj = bg_project from bugs where bg_id = 125
+
+delete from bug_subscriptions
+where bs_bug = 125
+and bs_user in
+(select x.pu_user
+from projects
+left outer join project_user_xref x on pu_project = pj_id
+where pu_project = @pj
+and isnull(pu_permission_level,2) = 0)
+
+delete from bug_subscriptions
+where bs_bug = 125
+and bs_user in
+(select us_id from users
+ inner join orgs on us_org = og_id
+ inner join bugs on bg_id = 125
+ where og_other_orgs_permission_level = 0
+ and bg_org <> og_id)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 125, us_id
+from users
+inner join orgs on us_org = og_id
+inner join bugs on bg_id = 125
+left outer join project_user_xref on pu_project = @pj and pu_user = us_id
+where us_auto_subscribe = 1
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and us_id not in
+(select bs_user from bug_subscriptions
+where bs_bug = 125)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 125, pj_default_user
+from projects
+inner join users on pj_default_user = us_id
+where pj_id = @pj
+and pj_default_user <> 0
+and pj_auto_subscribe_default_user = 1
+and us_active = 1
+and pj_default_user not in
+(select bs_user from bug_subscriptions
+where bs_bug = 125)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 125, pu_user from project_user_xref
+inner join users on pu_user = us_id
+inner join orgs on us_org = og_id
+inner join bugs on bg_id = 125
+where pu_auto_subscribe = 1
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and pu_project = @pj
+and pu_user not in
+(select bs_user from bug_subscriptions
+where bs_bug = 125)
+
+insert into bug_subscriptions (bs_bug, bs_user)
+select 125, us_id
+from users
+inner join bugs on bg_id = 125
+inner join orgs on us_org = og_id
+left outer join project_user_xref on pu_project = @pj and pu_user = us_id
+where ((us_auto_subscribe_own_bugs = 1 and bg_assigned_to_user = us_id)
+or
+(us_auto_subscribe_reported_bugs = 1 and bg_reported_user = us_id))
+and
+case
+	when
+		us_org <> bg_org
+		and og_other_orgs_permission_level < 2
+		and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+			then og_other_orgs_permission_level
+	else
+		isnull(pu_permission_level,2)
+end <> 0
+and us_active = 1
+and us_id not in
+(select bs_user from bug_subscriptions
+where bs_bug = 125)
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* get notification emails for all subscribers */
+select us_email, us_id, us_admin, og.*
+from bug_subscriptions
+inner join users on bs_user = us_id
+inner join orgs og on us_org = og_id
+inner join bugs on bg_id = bs_bug
+left outer join project_user_xref on pu_user = us_id and pu_project = bg_project
+where us_email is not null
+and us_enable_notifications = 1
+-- $status_change
+and us_active = 1
+and us_email <> ''
+and (   (1 <= us_reported_notifications and bg_reported_user = bs_user)
+or (1 <= us_assigned_notifications and bg_assigned_to_user = bs_user)
+or (1 <= us_assigned_notifications and 0 = bs_user)
+or (1 <= us_subscribed_notifications))
+and
+case
+when
+us_org <> bg_org
+and og_other_orgs_permission_level < 2
+and og_other_orgs_permission_level < isnull(pu_permission_level,2)
+	then og_other_orgs_permission_level
+else
+isnull(pu_permission_level,2)
+end <> 0
+and bs_bug = 125
+and (us_id <> 20 or isnull(us_send_notifications_to_self,0) = 1)
+2016-01-06 04:01:49  started updating Lucene index using folder C:\inetpub\wwwroot\newWebsite\bugtracker\btnet364\www\App_Data\lucene_index
+2016-01-06 04:01:49  sql=
+
+/* get searchable cols */					
+select sc.name
+from syscolumns sc
+inner join systypes st on st.xusertype = sc.xusertype
+inner join sysobjects so on sc.id = so.id
+where so.name = 'bugs'
+and st.[name] <> 'sysname'
+and sc.name not in ('rowguid',
+'bg_id',
+'bg_short_desc',
+'bg_reported_user',
+'bg_reported_date',
+'bg_project',
+'bg_org',
+'bg_category',
+'bg_priority',
+'bg_status',
+'bg_assigned_to_user',
+'bg_last_updated_user',
+'bg_last_updated_date',
+'bg_user_defined_attribute',
+'bg_project_custom_dropdown_value1',
+'bg_project_custom_dropdown_value2',
+'bg_project_custom_dropdown_value3',
+'bg_tags')
+and st.[name] in ('nvarchar','varchar')
+and sc.length > 30
+2016-01-06 04:01:49  elapsed milliseconds:0000
+2016-01-06 04:01:49  sql=
+
+select bg_id, 
+
+isnull(bg_tags,'') bg_tags,
+bg_short_desc    
+from bugs where bg_id = 125
+2016-01-06 04:01:49  elapsed milliseconds:0001
+2016-01-06 04:01:49  sql=
+
+select bp_bug, bp_id, 
+isnull(bp_comment_search,bp_comment) [text] 
+from bug_posts 
+where bp_type <> 'update'
+and bp_hidden_from_external_users = 0
+and bp_bug = 125
+2016-01-06 04:01:49  elapsed milliseconds:0003
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0019
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 125 and bu_user = 20)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(125, 20, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 125 and bu_user = 20 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	1 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 20
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 20
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 20
+where bg_id = 125
+2016-01-06 04:01:49  done updating Lucene index
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0062
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+select
+					isnull(pj_enable_custom_dropdown1,0) [pj_enable_custom_dropdown1],
+					isnull(pj_enable_custom_dropdown2,0) [pj_enable_custom_dropdown2],
+					isnull(pj_enable_custom_dropdown3,0) [pj_enable_custom_dropdown3],
+					isnull(pj_custom_dropdown_label1,'') [pj_custom_dropdown_label1],
+					isnull(pj_custom_dropdown_label2,'') [pj_custom_dropdown_label2],
+					isnull(pj_custom_dropdown_label3,'') [pj_custom_dropdown_label3]
+					from projects where pj_id = 7
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 125
+and a.bp_parent is null
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0011
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+select
+					isnull(pj_enable_custom_dropdown1,0) [pj_enable_custom_dropdown1],
+					isnull(pj_enable_custom_dropdown2,0) [pj_enable_custom_dropdown2],
+					isnull(pj_enable_custom_dropdown3,0) [pj_enable_custom_dropdown3],
+					isnull(pj_custom_dropdown_label1,'') [pj_custom_dropdown_label1],
+					isnull(pj_custom_dropdown_label2,'') [pj_custom_dropdown_label2],
+					isnull(pj_custom_dropdown_label3,'') [pj_custom_dropdown_label3]
+					from projects where pj_id = 7
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 125
+and a.bp_parent is null
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = 'e0835644-6bb1-4e10-9b5c-a0608eb3a2ea'
+and us_active = 1
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0001
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 125 and bu_user = 20)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(125, 20, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 125 and bu_user = 20 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	1 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 20
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 20
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 20
+where bg_id = 125
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0001
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 20
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0001
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (2 <> 0 or 1 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 7
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+select
+			isnull(pj_enable_custom_dropdown1,0) [pj_enable_custom_dropdown1],
+			isnull(pj_enable_custom_dropdown2,0) [pj_enable_custom_dropdown2],
+			isnull(pj_enable_custom_dropdown3,0) [pj_enable_custom_dropdown3],
+			isnull(pj_custom_dropdown_label1,'') [pj_custom_dropdown_label1],
+			isnull(pj_custom_dropdown_label2,'') [pj_custom_dropdown_label2],
+			isnull(pj_custom_dropdown_label3,'') [pj_custom_dropdown_label3],
+			isnull(pj_custom_dropdown_values1,'') [pj_custom_dropdown_values1],
+			isnull(pj_custom_dropdown_values2,'') [pj_custom_dropdown_values2],
+			isnull(pj_custom_dropdown_values3,'') [pj_custom_dropdown_values3]
+			from projects where pj_id = 7
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0000
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 125
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 04:01:49 http://www.learncodinganywhere.com/bugtracker/edit_bug.aspx?id=125 elapsed milliseconds:0011
+2016-01-06 04:02:49  actually_send_the_emails
+2016-01-06 04:02:49  sql=
+select * from queued_notifications where qn_status = N'not sent' and qn_retries < 3
+2016-01-06 04:02:49  elapsed milliseconds:0002
+2016-01-06 04:02:49  sending email to erik.d.gross@gmail.com
+2016-01-06 04:02:49  to email addr: erik.d.gross@gmail.com
+2016-01-06 04:02:49  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 04:02:49  TO:erik.d.gross@gmail.com
+2016-01-06 04:02:49  FROM:notify@techacademytracker.com
+2016-01-06 04:02:49  SUBJECT:Item:123 was updated - Logout Button needs to be implemented  (DO NOT EDIT THIS:123)
+2016-01-06 04:02:49  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 04:02:49  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 331
+2016-01-06 04:02:49  sending email to erik.d.gross@gmail.com
+2016-01-06 04:02:49  to email addr: erik.d.gross@gmail.com
+2016-01-06 04:02:49  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 04:02:49  TO:erik.d.gross@gmail.com
+2016-01-06 04:02:49  FROM:notify@techacademytracker.com
+2016-01-06 04:02:49  SUBJECT:Item:124 was added - Letter formatting needs to be prettier (Bret bug)  (DO NOT EDIT THIS:124)
+2016-01-06 04:02:49  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 04:02:49  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 332
+2016-01-06 04:02:49  sending email to erik.d.gross@gmail.com
+2016-01-06 04:02:49  to email addr: erik.d.gross@gmail.com
+2016-01-06 04:02:50  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 04:02:50  TO:erik.d.gross@gmail.com
+2016-01-06 04:02:50  FROM:notify@techacademytracker.com
+2016-01-06 04:02:50  SUBJECT:Item:125 was added - More prominent "Reviewer Guide" Button  (DO NOT EDIT THIS:125)
+2016-01-06 04:02:50  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 04:02:50  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 333
+2016-01-06 04:02:50  sending email to adamsmith28@msn.com
+2016-01-06 04:02:50  to email addr: adamsmith28@msn.com
+2016-01-06 04:02:50  There was a problem sending email.   Check settings in Web.config.
+2016-01-06 04:02:50  TO:adamsmith28@msn.com
+2016-01-06 04:02:50  FROM:notify@techacademytracker.com
+2016-01-06 04:02:50  SUBJECT:Item:125 was added - More prominent "Reviewer Guide" Button  (DO NOT EDIT THIS:125)
+2016-01-06 04:02:50  Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>
+2016-01-06 04:02:50  sql=
+update queued_notifications  set qn_retries = qn_retries + 1, qn_last_exception = N'Mailbox unavailable. The server response was: Verification failed for <notify@techacademytracker.com>' where qn_id = 334
+2016-01-06 05:40:50 http://www.learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs sql=
+select count(1) from users
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '16088cb5-2541-4c37-9f16-89c13bbfe945';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '16088cb5-2541-4c37-9f16-89c13bbfe945'
+and us_active = 1
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0000
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+ /* get_bug_datarow */
+if not exists (select bu_bug from bug_user where bu_bug = 86 and bu_user = 16)
+	insert into bug_user (bu_bug, bu_user, bu_flag, bu_seen, bu_vote) values(86, 16, 0, 1, 0) 
+update bug_user set bu_seen = 1, bu_seen_datetime = getdate() where bu_bug = 86 and bu_user = 16 and bu_seen <> 1
+declare @svn_revisions int
+declare @git_commits int
+declare @hg_revisions int
+declare @tasks int
+declare @related int;
+set @svn_revisions = 0
+set @git_commits = 0
+set @hg_revisions = 0
+set @tasks = 0
+set @related = 0
+
+select bg_id [id],
+bg_short_desc [short_desc],
+isnull(bg_tags,'') [bg_tags],
+isnull(ru.us_username,'[deleted user]') [reporter],
+isnull(ru.us_email,'') [reporter_email],
+case rtrim(ru.us_firstname)
+	when null then isnull(ru.us_lastname, '')
+	when '' then isnull(ru.us_lastname, '')
+	else isnull(ru.us_lastname + ', ' + ru.us_firstname,'')
+	end [reporter_fullname],
+bg_reported_date [reported_date],
+datediff(s,bg_reported_date,getdate()) [seconds_ago],
+isnull(lu.us_username,'') [last_updated_user],
+case rtrim(lu.us_firstname)
+	when null then isnull(lu.us_lastname, '')
+	when '' then isnull(lu.us_lastname, '')
+	else isnull(lu.us_lastname + ', ' + lu.us_firstname,'')
+	end [last_updated_fullname],
+
+
+bg_last_updated_date [last_updated_date],
+isnull(bg_project,0) [project],
+isnull(pj_name,'[no project]') [current_project],
+
+isnull(bg_org,0) [organization],
+isnull(bugorg.og_name,'') [og_name],
+
+isnull(bg_category,0) [category],
+isnull(ct_name,'') [category_name],
+
+isnull(bg_priority,0) [priority],
+isnull(pr_name,'') [priority_name],
+
+isnull(bg_status,0) [status],
+isnull(st_name,'') [status_name],
+
+isnull(bg_user_defined_attribute,0) [udf],
+isnull(udf_name,'') [udf_name],
+
+isnull(bg_assigned_to_user,0) [assigned_to_user],
+isnull(asg.us_username,'[not assigned]') [assigned_to_username],
+case rtrim(asg.us_firstname)
+when null then isnull(asg.us_lastname, '[not assigned]')
+when '' then isnull(asg.us_lastname, '[not assigned]')
+else isnull(asg.us_lastname + ', ' + asg.us_firstname,'[not assigned]')
+end [assigned_to_fullname],
+
+isnull(bs_user,0) [subscribed],
+
+case
+when
+	1 <> bg_org
+	and userorg.og_other_orgs_permission_level < 2
+	and userorg.og_other_orgs_permission_level < isnull(pu_permission_level,2)
+		then userorg.og_other_orgs_permission_level
+else
+	isnull(pu_permission_level,2)
+end [pu_permission_level],
+
+isnull(bg_project_custom_dropdown_value1,'') [bg_project_custom_dropdown_value1],
+isnull(bg_project_custom_dropdown_value2,'') [bg_project_custom_dropdown_value2],
+isnull(bg_project_custom_dropdown_value3,'') [bg_project_custom_dropdown_value3],
+@related [relationship_cnt],
+@svn_revisions [svn_revision_cnt],
+@git_commits [git_commit_cnt],
+@hg_revisions [hg_commit_cnt],
+@tasks [task_cnt],
+getdate() [snapshot_timestamp]
+
+from bugs
+inner join users this_user on us_id = 16
+inner join orgs userorg on this_user.us_org = userorg.og_id
+left outer join user_defined_attribute on bg_user_defined_attribute = udf_id
+left outer join projects on bg_project = pj_id
+left outer join orgs bugorg on bg_org = bugorg.og_id
+left outer join categories on bg_category = ct_id
+left outer join priorities on bg_priority = pr_id
+left outer join statuses on bg_status = st_id
+left outer join users asg on bg_assigned_to_user = asg.us_id
+left outer join users ru on bg_reported_user = ru.us_id
+left outer join users lu on bg_last_updated_user = lu.us_id
+left outer join bug_subscriptions on bs_bug = bg_id and bs_user = 16
+left outer join project_user_xref on pj_id = pu_project
+and pu_user = 16
+where bg_id = 86
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0001
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+/* drop downs */ select pj_id, pj_name
+		from projects
+		left outer join project_user_xref on pj_id = pu_project
+		and pu_user = 16
+		where pj_active = 1
+		and isnull(pu_permission_level,2) not in (0, 1)
+		order by pj_name;
+select og_id, og_name from orgs where og_active = 1 order by og_name;
+select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+select st_id, st_name from statuses order by st_sort_seq, st_name;
+select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name;
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0001
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+
+/* users this project */ select us_id, case when 0 = 1 then us_lastname + ', ' + us_firstname else us_username end us_username
+from users
+inner join orgs on us_org = og_id
+where us_active = 1
+and og_can_be_assigned_to = 1
+and (2 <> 0 or 1 = og_id or (og_external_user = 0 and 0 = 1))
+and us_id not in
+	(select pu_user from project_user_xref
+		where pu_project = 11
+		and pu_permission_level = 0)
+order by us_username; 
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0000
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+select
+			isnull(pj_enable_custom_dropdown1,0) [pj_enable_custom_dropdown1],
+			isnull(pj_enable_custom_dropdown2,0) [pj_enable_custom_dropdown2],
+			isnull(pj_enable_custom_dropdown3,0) [pj_enable_custom_dropdown3],
+			isnull(pj_custom_dropdown_label1,'') [pj_custom_dropdown_label1],
+			isnull(pj_custom_dropdown_label2,'') [pj_custom_dropdown_label2],
+			isnull(pj_custom_dropdown_label3,'') [pj_custom_dropdown_label3],
+			isnull(pj_custom_dropdown_values1,'') [pj_custom_dropdown_values1],
+			isnull(pj_custom_dropdown_values2,'') [pj_custom_dropdown_values2],
+			isnull(pj_custom_dropdown_values3,'') [pj_custom_dropdown_values3]
+			from projects where pj_id = 11
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0000
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 86
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 05:55:42 http://learncodinganywhere.com/bugtracker/edit_bug.aspx?id=86 elapsed milliseconds:0000
+2016-01-06 17:41:07  caught exception in util.set_context:Request is not available in this context
+2016-01-06 17:41:07  threadproc_votes
+2016-01-06 17:41:07  sql=
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[votes_view]'))
+drop view [votes_view]
+2016-01-06 17:41:07  started creating Lucene index using folder C:\inetpub\wwwroot\newWebsite\bugtracker\btnet364\www\App_Data\lucene_index
+2016-01-06 17:41:07 http://learncodinganywhere.com/bugtracker/bugs.aspx se_id cookie is null, so redirecting
+2016-01-06 17:41:07  sql=
+
+create view votes_view as
+select bu_bug as vote_bug, sum(bu_vote) as vote_total
+from bug_user
+group by bu_bug
+having sum(bu_vote) > 0
+2016-01-06 17:41:07  sql=
+
+select bu_bug, count(1)
+from bug_user 
+where bu_vote = 1
+group by bu_bug
+2016-01-06 17:41:07  elapsed milliseconds:0003
+2016-01-06 17:41:07  sql=
+
+/* get searchable cols */					
+select sc.name
+from syscolumns sc
+inner join systypes st on st.xusertype = sc.xusertype
+inner join sysobjects so on sc.id = so.id
+where so.name = 'bugs'
+and st.[name] <> 'sysname'
+and sc.name not in ('rowguid',
+'bg_id',
+'bg_short_desc',
+'bg_reported_user',
+'bg_reported_date',
+'bg_project',
+'bg_org',
+'bg_category',
+'bg_priority',
+'bg_status',
+'bg_assigned_to_user',
+'bg_last_updated_user',
+'bg_last_updated_date',
+'bg_user_defined_attribute',
+'bg_project_custom_dropdown_value1',
+'bg_project_custom_dropdown_value2',
+'bg_project_custom_dropdown_value3',
+'bg_tags')
+and st.[name] in ('nvarchar','varchar')
+and sc.length > 30
+2016-01-06 17:41:07  elapsed milliseconds:0001
+2016-01-06 17:41:07  sql=
+
+select bg_id, 	
+
+isnull(bg_tags,'') bg_tags,
+bg_short_desc
+from bugs
+2016-01-06 17:41:07  elapsed milliseconds:0001
+2016-01-06 17:41:07 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+select count(1) from users
+2016-01-06 17:41:07  sql=
+
+select bp_bug, bp_id, 
+isnull(bp_comment_search,bp_comment) [text] 
+from bug_posts 
+where bp_type <> 'update'
+and bp_hidden_from_external_users = 0
+2016-01-06 17:41:07  elapsed milliseconds:0002
+2016-01-06 17:41:07  done creating Lucene index
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+select count(1) from users
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+
+select us_username, us_id, us_password, isnull(us_salt,0) us_salt, us_active
+from users
+where us_username = N'adams'
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= elapsed milliseconds:0000
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+update users set us_most_recent_login_datetime = getdate() where us_id = 19
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+select us_id from users where us_username = N'adams'
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= elapsed milliseconds:0000
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= guid=273788dc-994b-4b28-9e10-865f859588eb
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= sql=
+insert into sessions (se_id, se_user) values('273788dc-994b-4b28-9e10-865f859588eb', 19)
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/default.aspx?url=/bugtracker/bugs.aspx&qs= AppPath:/bugtracker
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0012
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx sql=
+
+/* custom columns */ select sc.name, st.[name] [datatype], 
+case when st.[name] = 'nvarchar' or st.[name] = 'nchar' then sc.length/2 else sc.length end as [length], 
+sc.xprec, sc.xscale, sc.isnullable,
+mm.text [default value], 
+dflts.name [default name], 
+isnull(ccm_dropdown_type,'') [dropdown type],
+isnull(ccm_dropdown_vals,'') [vals],
+isnull(ccm_sort_seq, sc.colorder) [column order],
+sc.colorder
+from syscolumns sc
+inner join systypes st on st.xusertype = sc.xusertype
+inner join sysobjects so on sc.id = so.id
+left outer join syscomments mm on sc.cdefault = mm.id
+left outer join custom_col_metadata on ccm_colorder = sc.colorder
+left outer join sysobjects dflts on dflts.id = mm.id
+where so.name = 'bugs'
+and st.[name] <> 'sysname'
+and sc.name not in ('rowguid',
+'bg_id',
+'bg_short_desc',
+'bg_reported_user',
+'bg_reported_date',
+'bg_project',
+'bg_org',
+'bg_category',
+'bg_priority',
+'bg_status',
+'bg_assigned_to_user',
+'bg_last_updated_user',
+'bg_last_updated_date',
+'bg_user_defined_attribute',
+'bg_project_custom_dropdown_value1',
+'bg_project_custom_dropdown_value2',
+'bg_project_custom_dropdown_value3',
+'bg_tags')
+order by sc.id, isnull(ccm_sort_seq,sc.colorder)
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0000
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx sql=
+/* query dropdown */
+select qu_id, qu_desc
+from queries
+where (isnull(qu_user,0) = 0 and isnull(qu_org,0) = 0)
+or isnull(qu_user,0) = 19
+or isnull(qu_org,0) = 1
+order by qu_desc
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0000
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx sql=
+select qu_id, qu_sql from queries where qu_id in
+			(select us_default_query from users where us_id = 19)
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0000
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx sql=
+select isnull(pr_background_color,'#ffffff'), bg_id [id], isnull(bu_flag,0) [$FLAG], 
+ bg_short_desc [desc], isnull(pj_name,'') [project], isnull(og_name,'') [organization], isnull(ct_name,'') [category], rpt.us_username [reported by],
+ bg_reported_date [reported on], isnull(bu_seen,0) [$SEEN], isnull(pr_name,'') [priority], isnull(asg.us_username,'') [assigned to],
+ isnull(st_name,'') [status], isnull(lu.us_username,'') [last updated by], bg_last_updated_date [last updated on]
+ from bugs 
+ left outer join bug_user on bu_bug = bg_id and bu_user = 19 
+ left outer join users rpt on rpt.us_id = bg_reported_user
+ left outer join users asg on asg.us_id = bg_assigned_to_user
+ left outer join users lu on lu.us_id = bg_last_updated_user
+ left outer join projects on pj_id = bg_project
+ left outer join orgs on og_id = bg_org
+ left outer join categories on ct_id = bg_category
+ left outer join priorities on pr_id = bg_priority
+ left outer join statuses on st_id = bg_status
+  /* altered - just order by  */ WHERE  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 19
+					and pu_permission_level = 0)) order by bg_id desc
+2016-01-06 17:41:09 http://learncodinganywhere.com/bugtracker/bugs.aspx elapsed milliseconds:0007
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* get related users 2 */
+select  pj_id, us_id,
+case when 0 = 1 then
+    case when len(isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')) > 1
+	then isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')
+    else us_username end
+else us_username end us_username,
+isnull(us_email,'') us_email
+into #temp
+from projects, users
+where pj_id not in
+(
+	select pu_project from project_user_xref
+	where pu_permission_level = 0 and pu_user = 19
+)
+
+
+
+
+
+if 0 = 1 -- external
+and 2 = 0 -- other orgs
+begin
+	select distinct a.us_id, a.us_username, a.us_email
+	from #temp a
+	inner join users b on a.us_id = b.us_id
+	inner join orgs on b.us_org = og_id
+	where og_external_user = 0 or b.us_org = 1
+	order by a.us_username
+end
+else
+begin
+
+	select distinct us_id, us_username, us_email
+		from #temp
+		left outer join project_user_xref on pj_id = pu_project
+		and us_id = pu_user
+		where isnull(pu_permission_level,2) <> 0
+		order by us_username
+end
+
+drop table #temp
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0035
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+/* drop downs */ select pj_id, pj_name from projects order by pj_name; select og_id, og_name from orgs order by og_name;
+	select ct_id, ct_name from categories order by ct_sort_seq, ct_name;
+	select pr_id, pr_name from priorities order by pr_sort_seq, pr_name;
+	select st_id, st_name from statuses order by st_sort_seq, st_name;
+	select udf_id, udf_name from user_defined_attribute order by udf_sort_seq, udf_name
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:41:38 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+select count(1)
+from projects
+where isnull(pj_enable_custom_dropdown1,0) = 1
+or isnull(pj_enable_custom_dropdown2,0) = 1
+or isnull(pj_enable_custom_dropdown3,0) = 1
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0002
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* get related users 2 */
+select  pj_id, us_id,
+case when 0 = 1 then
+    case when len(isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')) > 1
+	then isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')
+    else us_username end
+else us_username end us_username,
+isnull(us_email,'') us_email
+into #temp
+from projects, users
+where pj_id not in
+(
+	select pu_project from project_user_xref
+	where pu_permission_level = 0 and pu_user = 19
+)
+
+
+
+
+
+if 0 = 1 -- external
+and 2 = 0 -- other orgs
+begin
+	select distinct a.us_id, a.us_username, a.us_email
+	from #temp a
+	inner join users b on a.us_id = b.us_id
+	inner join orgs on b.us_org = og_id
+	where og_external_user = 0 or b.us_org = 1
+	order by a.us_username
+end
+else
+begin
+
+	select distinct us_id, us_username, us_email
+		from #temp
+		left outer join project_user_xref on pj_id = pu_project
+		and us_id = pu_user
+		where isnull(pu_permission_level,2) <> 0
+		order by us_username
+end
+
+drop table #temp
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0062
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+select
+pj_id,
+isnull(pj_enable_custom_dropdown1,0) pj_enable_custom_dropdown1,
+isnull(pj_enable_custom_dropdown2,0) pj_enable_custom_dropdown2,
+isnull(pj_enable_custom_dropdown3,0) pj_enable_custom_dropdown3,
+isnull(pj_custom_dropdown_label1,'') pj_custom_dropdown_label1,
+isnull(pj_custom_dropdown_label2,'') pj_custom_dropdown_label2,
+isnull(pj_custom_dropdown_label3,'') pj_custom_dropdown_label3,
+isnull(pj_custom_dropdown_values1,'') pj_custom_dropdown_values1,
+isnull(pj_custom_dropdown_values2,'') pj_custom_dropdown_values2,
+isnull(pj_custom_dropdown_values3,'') pj_custom_dropdown_values3
+from projects
+where isnull(pj_enable_custom_dropdown1,0) = 1
+or isnull(pj_enable_custom_dropdown2,0) = 1
+or isnull(pj_enable_custom_dropdown3,0) = 1
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+select isnull(pr_background_color,'#ffffff') [color], bg_id [id],
+bg_short_desc [desc]
+,isnull(rpt.us_username,'') [reported by]
+,bg_reported_date [reported on]
+,isnull(lu.us_username,'') [last updated by]
+,bg_last_updated_date [last updated on],
+isnull(pj_name,'') [project],
+isnull(og_name,'') [organization],
+isnull(ct_name,'') [category],
+isnull(pr_name,'') [priority],
+isnull(asg.us_username,'') [assigned to],
+isnull(st_name,'') [status] from bugs
+			left outer join users rpt on rpt.us_id = bg_reported_user
+			left outer join users lu on lu.us_id = bg_last_updated_user
+			left outer join users asg on asg.us_id = bg_assigned_to_user
+			left outer join projects on pj_id = bg_project
+			left outer join orgs on og_id = bg_org
+			left outer join categories on ct_id = bg_category
+			left outer join priorities on pr_id = bg_priority
+			left outer join statuses on st_id = bg_status
+			 where /* altered - both  */ (  bg_reported_user in (16)   ) AND (  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 19
+					and pu_permission_level = 0))  ) order by bg_id desc
+2016-01-06 17:41:59 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0021
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* get related users 2 */
+select  pj_id, us_id,
+case when 0 = 1 then
+    case when len(isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')) > 1
+	then isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')
+    else us_username end
+else us_username end us_username,
+isnull(us_email,'') us_email
+into #temp
+from projects, users
+where pj_id not in
+(
+	select pu_project from project_user_xref
+	where pu_permission_level = 0 and pu_user = 19
+)
+
+
+
+
+
+if 0 = 1 -- external
+and 2 = 0 -- other orgs
+begin
+	select distinct a.us_id, a.us_username, a.us_email
+	from #temp a
+	inner join users b on a.us_id = b.us_id
+	inner join orgs on b.us_org = og_id
+	where og_external_user = 0 or b.us_org = 1
+	order by a.us_username
+end
+else
+begin
+
+	select distinct us_id, us_username, us_email
+		from #temp
+		left outer join project_user_xref on pj_id = pu_project
+		and us_id = pu_user
+		where isnull(pu_permission_level,2) <> 0
+		order by us_username
+end
+
+drop table #temp
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0021
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+select
+pj_id,
+isnull(pj_enable_custom_dropdown1,0) pj_enable_custom_dropdown1,
+isnull(pj_enable_custom_dropdown2,0) pj_enable_custom_dropdown2,
+isnull(pj_enable_custom_dropdown3,0) pj_enable_custom_dropdown3,
+isnull(pj_custom_dropdown_label1,'') pj_custom_dropdown_label1,
+isnull(pj_custom_dropdown_label2,'') pj_custom_dropdown_label2,
+isnull(pj_custom_dropdown_label3,'') pj_custom_dropdown_label3,
+isnull(pj_custom_dropdown_values1,'') pj_custom_dropdown_values1,
+isnull(pj_custom_dropdown_values2,'') pj_custom_dropdown_values2,
+isnull(pj_custom_dropdown_values3,'') pj_custom_dropdown_values3
+from projects
+where isnull(pj_enable_custom_dropdown1,0) = 1
+or isnull(pj_enable_custom_dropdown2,0) = 1
+or isnull(pj_enable_custom_dropdown3,0) = 1
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0000
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+select isnull(pr_background_color,'#ffffff') [color], bg_id [id],
+bg_short_desc [desc]
+,isnull(rpt.us_username,'') [reported by]
+,bg_reported_date [reported on]
+,isnull(lu.us_username,'') [last updated by]
+,bg_last_updated_date [last updated on],
+isnull(pj_name,'') [project],
+isnull(og_name,'') [organization],
+isnull(ct_name,'') [category],
+isnull(pr_name,'') [priority],
+isnull(asg.us_username,'') [assigned to],
+isnull(st_name,'') [status] from bugs
+			left outer join users rpt on rpt.us_id = bg_reported_user
+			left outer join users lu on lu.us_id = bg_last_updated_user
+			left outer join users asg on asg.us_id = bg_assigned_to_user
+			left outer join projects on pj_id = bg_project
+			left outer join orgs on og_id = bg_org
+			left outer join categories on ct_id = bg_category
+			left outer join priorities on pr_id = bg_priority
+			left outer join statuses on st_id = bg_status
+			 where /* altered - both  */ (  bg_reported_user in (16) and bg_assigned_to_user in (16) and bg_project in (11)   ) AND (  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 19
+					and pu_permission_level = 0))  ) order by bg_id desc
+2016-01-06 17:42:26 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0018
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* get related users 2 */
+select  pj_id, us_id,
+case when 0 = 1 then
+    case when len(isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')) > 1
+	then isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')
+    else us_username end
+else us_username end us_username,
+isnull(us_email,'') us_email
+into #temp
+from projects, users
+where pj_id not in
+(
+	select pu_project from project_user_xref
+	where pu_permission_level = 0 and pu_user = 19
+)
+
+
+
+
+
+if 0 = 1 -- external
+and 2 = 0 -- other orgs
+begin
+	select distinct a.us_id, a.us_username, a.us_email
+	from #temp a
+	inner join users b on a.us_id = b.us_id
+	inner join orgs on b.us_org = og_id
+	where og_external_user = 0 or b.us_org = 1
+	order by a.us_username
+end
+else
+begin
+
+	select distinct us_id, us_username, us_email
+		from #temp
+		left outer join project_user_xref on pj_id = pu_project
+		and us_id = pu_user
+		where isnull(pu_permission_level,2) <> 0
+		order by us_username
+end
+
+drop table #temp
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0028
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+select
+pj_id,
+isnull(pj_enable_custom_dropdown1,0) pj_enable_custom_dropdown1,
+isnull(pj_enable_custom_dropdown2,0) pj_enable_custom_dropdown2,
+isnull(pj_enable_custom_dropdown3,0) pj_enable_custom_dropdown3,
+isnull(pj_custom_dropdown_label1,'') pj_custom_dropdown_label1,
+isnull(pj_custom_dropdown_label2,'') pj_custom_dropdown_label2,
+isnull(pj_custom_dropdown_label3,'') pj_custom_dropdown_label3,
+isnull(pj_custom_dropdown_values1,'') pj_custom_dropdown_values1,
+isnull(pj_custom_dropdown_values2,'') pj_custom_dropdown_values2,
+isnull(pj_custom_dropdown_values3,'') pj_custom_dropdown_values3
+from projects
+where isnull(pj_enable_custom_dropdown1,0) = 1
+or isnull(pj_enable_custom_dropdown2,0) = 1
+or isnull(pj_enable_custom_dropdown3,0) = 1
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0000
+2016-01-06 17:42:32 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+select isnull(pr_background_color,'#ffffff') [color], bg_id [id],
+bg_short_desc [desc]
+,isnull(rpt.us_username,'') [reported by]
+,bg_reported_date [reported on]
+,isnull(lu.us_username,'') [last updated by]
+,bg_last_updated_date [last updated on],
+isnull(pj_name,'') [project],
+isnull(og_name,'') [organization],
+isnull(ct_name,'') [category],
+isnull(pr_name,'') [priority],
+isnull(asg.us_username,'') [assigned to],
+isnull(st_name,'') [status] from bugs
+			left outer join users rpt on rpt.us_id = bg_reported_user
+			left outer join users lu on lu.us_id = bg_last_updated_user
+			left outer join users asg on asg.us_id = bg_assigned_to_user
+			left outer join projects on pj_id = bg_project
+			left outer join orgs on og_id = bg_org
+			left outer join categories on ct_id = bg_category
+			left outer join priorities on pr_id = bg_priority
+			left outer join statuses on st_id = bg_status
+			 where /* altered - both  */ (  bg_reported_user in (15) and bg_assigned_to_user in (16) and bg_project in (11)   ) AND (  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 19
+					and pu_permission_level = 0))  ) order by bg_id desc
+2016-01-06 17:42:33 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0022
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0001
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 100
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0000
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 100
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:37 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0007
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 94
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 94
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 94
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 94
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:41 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 elapsed milliseconds:0001
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 93
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 elapsed milliseconds:0000
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 93
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:53 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=93 elapsed milliseconds:0000
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0001
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 90
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0001
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 90
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0000
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 elapsed milliseconds:0001
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 89
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 elapsed milliseconds:0000
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 89
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:42:59 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=89 elapsed milliseconds:0000
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0001
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 100
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0000
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 100
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:43:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0001
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 elapsed milliseconds:0003
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 92
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 elapsed milliseconds:0000
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 92
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:15 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=92 elapsed milliseconds:0000
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0001
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 100
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0000
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 100
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:22 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=100 elapsed milliseconds:0000
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0001
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+/* get related users 2 */
+select  pj_id, us_id,
+case when 0 = 1 then
+    case when len(isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')) > 1
+	then isnull(us_firstname,'') + ' ' + isnull(us_lastname,'')
+    else us_username end
+else us_username end us_username,
+isnull(us_email,'') us_email
+into #temp
+from projects, users
+where pj_id not in
+(
+	select pu_project from project_user_xref
+	where pu_permission_level = 0 and pu_user = 19
+)
+
+
+
+
+
+if 0 = 1 -- external
+and 2 = 0 -- other orgs
+begin
+	select distinct a.us_id, a.us_username, a.us_email
+	from #temp a
+	inner join users b on a.us_id = b.us_id
+	inner join orgs on b.us_org = og_id
+	where og_external_user = 0 or b.us_org = 1
+	order by a.us_username
+end
+else
+begin
+
+	select distinct us_id, us_username, us_email
+		from #temp
+		left outer join project_user_xref on pj_id = pu_project
+		and us_id = pu_user
+		where isnull(pu_permission_level,2) <> 0
+		order by us_username
+end
+
+drop table #temp
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0029
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+
+select
+pj_id,
+isnull(pj_enable_custom_dropdown1,0) pj_enable_custom_dropdown1,
+isnull(pj_enable_custom_dropdown2,0) pj_enable_custom_dropdown2,
+isnull(pj_enable_custom_dropdown3,0) pj_enable_custom_dropdown3,
+isnull(pj_custom_dropdown_label1,'') pj_custom_dropdown_label1,
+isnull(pj_custom_dropdown_label2,'') pj_custom_dropdown_label2,
+isnull(pj_custom_dropdown_label3,'') pj_custom_dropdown_label3,
+isnull(pj_custom_dropdown_values1,'') pj_custom_dropdown_values1,
+isnull(pj_custom_dropdown_values2,'') pj_custom_dropdown_values2,
+isnull(pj_custom_dropdown_values3,'') pj_custom_dropdown_values3
+from projects
+where isnull(pj_enable_custom_dropdown1,0) = 1
+or isnull(pj_enable_custom_dropdown2,0) = 1
+or isnull(pj_enable_custom_dropdown3,0) = 1
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0000
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx sql=
+select isnull(pr_background_color,'#ffffff') [color], bg_id [id],
+bg_short_desc [desc]
+,isnull(rpt.us_username,'') [reported by]
+,bg_reported_date [reported on]
+,isnull(lu.us_username,'') [last updated by]
+,bg_last_updated_date [last updated on],
+isnull(pj_name,'') [project],
+isnull(og_name,'') [organization],
+isnull(ct_name,'') [category],
+isnull(pr_name,'') [priority],
+isnull(asg.us_username,'') [assigned to],
+isnull(st_name,'') [status] from bugs
+			left outer join users rpt on rpt.us_id = bg_reported_user
+			left outer join users lu on lu.us_id = bg_last_updated_user
+			left outer join users asg on asg.us_id = bg_assigned_to_user
+			left outer join projects on pj_id = bg_project
+			left outer join orgs on og_id = bg_org
+			left outer join categories on ct_id = bg_category
+			left outer join priorities on pr_id = bg_priority
+			left outer join statuses on st_id = bg_status
+			 where /* altered - both  */ (  bg_reported_user in (15) and bg_assigned_to_user in (16) and bg_project in (11) and bg_priority in (1)   ) AND (  (bugs.bg_project not in (
+					select pu_project
+					from project_user_xref
+					where pu_user = 19
+					and pu_permission_level = 0))  ) order by bg_id desc
+2016-01-06 17:47:30 http://learncodinganywhere.com/bugtracker/search.aspx elapsed milliseconds:0022
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 94
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 94
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 94
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 94
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 94
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0000
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 94
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:33 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=94 elapsed milliseconds:0001
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0001
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 90
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0000
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 90
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:40 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=90 elapsed milliseconds:0000
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 elapsed milliseconds:0001
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 87
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 elapsed milliseconds:0000
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 87
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:45 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=87 elapsed milliseconds:0000
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 elapsed milliseconds:0001
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 78
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 elapsed milliseconds:0000
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 78
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:48 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=78 elapsed milliseconds:0000
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 elapsed milliseconds:0001
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 77
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 elapsed milliseconds:0001
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 77
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:47:52 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=77 elapsed milliseconds:0001
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 elapsed milliseconds:0001
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 76
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 elapsed milliseconds:0000
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 76
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:48:01 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=76 elapsed milliseconds:0000
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 elapsed milliseconds:0001
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 74
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 elapsed milliseconds:0000
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 74
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:48:04 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=74 elapsed milliseconds:0001
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 elapsed milliseconds:0001
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 72
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 elapsed milliseconds:0000
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 72
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:48:10 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=72 elapsed milliseconds:0000
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 elapsed milliseconds:0001
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 71
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 elapsed milliseconds:0000
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 71
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:48:19 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=71 elapsed milliseconds:0000
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 sql=
+
+/* check session */
+declare @project_admin int
+select @project_admin = count(1)
+	from sessions
+	inner join project_user_xref on pu_user = se_user
+	and pu_admin = 1
+	where se_id = '273788dc-994b-4b28-9e10-865f859588eb';
+
+select us_id, us_admin,
+us_username, us_firstname, us_lastname,
+isnull(us_email,'') us_email,
+isnull(us_bugs_per_page,10) us_bugs_per_page,
+isnull(us_forced_project,0) us_forced_project,
+us_use_fckeditor,
+us_enable_bug_list_popups,
+og.*,
+isnull(us_forced_project, 0 ) us_forced_project,
+isnull(pu_permission_level, 2) pu_permission_level,
+@project_admin [project_admin]
+from sessions
+inner join users on se_user = us_id
+inner join orgs og on us_org = og_id
+left outer join project_user_xref
+	on pu_project = us_forced_project
+	and pu_user = us_id
+where se_id = '273788dc-994b-4b28-9e10-865f859588eb'
+and us_active = 1
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 elapsed milliseconds:0001
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 sql=
+
+declare @bg_org int
+
+select isnull(pu_permission_level,2),
+bg_org
+from bugs
+left outer join project_user_xref
+on pu_project = bg_project
+and pu_user = 19
+where bg_id = 70
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 elapsed milliseconds:0000
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 sql=
+
+/* get_bug_posts */
+select
+a.bp_bug,
+a.bp_comment,
+isnull(us_username,'') [us_username],
+case rtrim(us_firstname)
+	when null then isnull(us_lastname, '')
+	when '' then isnull(us_lastname, '')
+	else isnull(us_lastname + ', ' + us_firstname,'')
+	end [us_fullname],
+isnull(us_email,'') [us_email],
+a.bp_date,
+datediff(s,a.bp_date,getdate()) [seconds_ago],
+a.bp_id,
+a.bp_type,
+isnull(a.bp_email_from,'') bp_email_from,
+isnull(a.bp_email_to,'') bp_email_to,
+isnull(a.bp_email_cc,'') bp_email_cc,
+isnull(a.bp_file,'') bp_file,
+isnull(a.bp_size,0) bp_size,
+isnull(a.bp_content_type,'') bp_content_type,
+a.bp_hidden_from_external_users,
+isnull(ba.bp_file,'') ba_file,  -- intentionally ba
+isnull(ba.bp_id,'') ba_id, -- intentionally ba
+isnull(ba.bp_size,'') ba_size,  -- intentionally ba
+isnull(ba.bp_content_type,'') ba_content_type -- intentionally ba
+from bug_posts a
+left outer join users on us_id = a.bp_user
+left outer join bug_posts ba on ba.bp_parent = a.bp_id and ba.bp_bug = a.bp_bug
+where a.bp_bug = 70
+and a.bp_parent is null
+ and a.bp_type <> 'update'
+ order by a.bp_id desc, ba.bp_parent, ba.bp_id
+2016-01-06 17:48:21 http://learncodinganywhere.com/bugtracker/ajax.aspx?bugid=70 elapsed milliseconds:0000
