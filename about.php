@@ -1,0 +1,182 @@
+<?php
+
+echo "<!DOCTYPE html>\n";
+echo "<html lang=\"en\">\n";
+echo "<head>\n";
+echo "    <meta charset=\"utf-8\">\n";
+echo "    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
+echo "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n";
+echo "    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n";
+echo "    <meta name=\"description\" content=\"\">\n";
+echo "    <meta name=\"author\" content=\"\">\n";
+echo "\n";
+echo "    <title>About</title>\n";
+echo "	\n";
+echo "	<!--  Font Awesome  -->\n";
+echo "	<link href=\"fonts/font-awesome/css/font-awesome.min.css\" rel=\"stylesheet\">\n";
+echo "	<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css\" rel=\"stylesheet\">\n";
+echo "	\n";
+echo "	<!--  Google Font  -->\n";
+echo "	<link href=\"https://fonts.googleapis.com/css?family=Titillium+Web\" rel=\"stylesheet\" type=\"text/css\">\n";
+echo "\n";
+echo "    <!-- Bootstrap core CSS -->\n";
+echo "    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\">\n";
+echo "\n";
+echo "    <!-- Custom CSS -->\n";
+echo "    <link href=\"css/style.css\" rel=\"stylesheet\">\n";
+echo "\n";
+echo "\n";
+echo "    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->\n";
+echo "    <!--[if lt IE 9]>\n";
+echo "    <script src=\"https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js\"></script>\n";
+echo "    <script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\n";
+echo "    <![endif]-->\n";
+echo "</head>\n";
+echo "\n";
+
+include 'header.php';
+
+echo "\n";
+echo "        \n";
+echo "\n";
+echo "        <!-- Start Tiles -->\n";
+echo "        <div class=\"row tiles text-justify slideanim\" id=\"first\"><!-- Start Row 1 -->\n";
+echo "            <div class=\"col-lg-6\">\n";
+echo "                <h2 class=\"text-center\">THE TECH ACADEMY</h2>\n";
+echo "                <h3 class=\"text-center\">A NEW APPROACH TO TRAINING IN TECHNOLOGY</h3>\n";
+echo "                <p>Erik Gross has been involved in technology since the 1980s. He worked in the navy as a nuclear reactor operator and taught classes there in computer science, nuclear physics, advanced mathematics, and other subjects. It was during his tenure in the service that he discovered his love for teaching others.</p>\n";
+echo "                <p><img src=\"images/PITC.png\" class=\"right hidden-sm hidden-xs\" />Several years ago, Erik established his own software development company called Prosper I.T. Consulting. As he began pulling in more and more contracts, he discovered a need for junior-level programmers to assist him on these projects. Erik observed a lack of available talent and so began personally training individuals on the side to work with him.</p>\n";
+echo "                <p><img src=\"images/PITA.png\" class=\"left hidden-sm hidden-xs\" />In 2012, Erik discovered programming boot camps that were beginning to crop up in the California Bay Area. It was then that Erik decided to turn his training of software developers into a formal activity, and so “Prosper I.T. Academy was formed”.</p>\n";
+echo "                <p id=\"location_1\">Between 2012 and the end of 2013, Erik trained entry-level developers and created a framework for a curriculum.</p> \n";
+echo "                <p>Erik decided to devote his full attention to the code school and recognized that taking the venture to the next level would take business acumen and managerial experience. He then approached his longtime friend, and seasoned executive, Jack Stanley.</p>\n";
+echo "            </div>\n";
+echo "            <div class=\"col-lg-6\">\n";
+echo "                <img src=\"images/About_1.png\" class=\"img_fit\" id=\"img_1\"/>\n";
+echo "            </div>   \n";
+echo "        </div><!-- End Row 1 -->\n";
+echo "        \n";
+echo "        <div class=\"row text-justify slideanim\"><!-- Start Row 2 -->\n";
+echo "            <div class=\"col-lg-6\">\n";
+echo "                <img src=\"images/About_2.png\" class=\"img_fit\" />\n";
+echo "            </div>  \n";
+echo "            <div class=\"col-lg-6\">\n";
+echo "                <p>For several months, Jack Stanley and Erik Gross worked together to perfect the curriculum and fully establish the school.</p>\n";
+echo "                <p><img src=\"images/Tech_Academy_Logo.png\" style=\"width:200px;\" class=\"right hidden-sm hidden-xs\"/>In the beginning of 2014, Prosper I.T. Academy then became “The Tech Academy”. At this time, there were about ten students attending and The Tech Academy was located in Beaverton Oregon.</p>\n";
+echo "                <p>Jack Stanley had years of experience running successful companies and business ventures, and where Erik held senior tech skills, Jack excelled in administrative abilities. Additionally, Erik and Jack had already previously worked together on several earlier projects to great success.</p>\n";
+echo "            </div> \n";
+echo "        </div><!-- End Row 2 -->\n";
+echo "        \n";
+echo "        <div class=\"row text-justify slideanim\"><!-- Start Row 3 -->\n";
+echo "			<div class=\"col-lg-6 hidden-md hidden-lg\">\n";
+echo "                <img src=\"images/About_3.png\" class=\"img_fit\" />\n";
+echo "            </div>   \n";
+echo "            <div class=\"col-lg-6\">\n";
+echo "                <p>The curriculum that Erik and Jack developed has been reviewed by several qualified parties, including individuals with degrees in Computer Science. As a matter of fact, Dr. Brent Wilson (Professor of Computer Science for George Fox University) is a curriculum advisor for The Tech Academy.</p>\n";
+echo "                <p>As it stands today, The Tech Academy’s Software Developer Boot Camp has graduated and enrolled hundreds of students. Due to how the curriculum is designed and the teaching methods we use, students are able to learn a tremendous quantity of technical skills in a relatively short period of time – making The Tech Academy’s curriculum one of the most comprehensive and large programs out of any boot camp</p>\n";
+echo "            </div>\n";
+echo "            <div class=\"col-lg-6 hidden-sm hidden-xs\">\n";
+echo "                <img src=\"images/About_3.png\" class=\"img_fit\" />\n";
+echo "            </div>   \n";
+echo "        </div><!-- End Row 3 -->\n";
+echo "        <div class=\"row slideanim\"><!-- Start Row 4 -->\n";
+echo "            <div class=\"col-lg-12\">\n";
+echo "                <p>Here is a video that covers The Tech Academy and its program in detail:</p>\n";
+echo "                <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/goznrmb5gls\"  id=\"iframeOtherPages\" frameborder=\"0\" allowfullscreen></iframe>\n";
+echo "                <p>If you have any questions or would like any additional information,\n";
+echo "                    <a href=\"contact.html\">please contact us now.</a></p>\n";
+echo "            </div>\n";
+echo "            \n";
+echo "        </div><!-- End Row 4 -->\n";
+echo "        \n";
+echo "        <div class=\"banner row\">\n";
+echo "                <h3>15 week Software Developer Boot Camp</h3>\n";
+echo "                <h2><a href=\"contact.html\">Enroll Now and START TODAY</a></h2>\n";
+echo "        </div>\n";
+echo "    \n";
+echo "\n";
+
+include 'footer.php';
+
+echo "\n";
+echo "    </div> <!-- /container -->\n";
+echo "\n";
+echo "\n";
+echo "    <div id=\"myModalPopUp\" class=\"modal fade\" role=\"dialog\"> <!-- modal dialog box -->\n";
+echo "	    <div class=\"modal-dialog\">\n";
+echo "		    <!-- Modal content-->\n";
+echo "		    <div class=\"modal-content\">\n";
+echo "			    <div class=\"modal-header\">\n";
+echo "				    <button type=\"button\" class=\"close\" data-dismiss=\"modal\">×</button>\n";
+echo "				    <h3 class=\"modal-title\">Hi there!</h3>\n";
+echo "			    </div>\n";
+echo "			    <div class=\"modal-body\">\n";
+echo "				    <p>Would you like to learn more about The Tech Academy?</p>\n";
+echo "			    </div>\n";
+echo "			    <div class=\"modal-footer\">\n";
+echo "                    <a class=\"btn modal-button-yes\" href=\"contact.html\">Yes</a>\n";
+echo "                    <a class=\"btn\" data-dismiss=\"modal\">No</a>\n";
+echo "			    </div>\n";
+echo "		    </div>\n";
+echo "	    </div>\n";
+echo "    </div>\n";
+echo "\n";
+echo "	<!-- Start Alexa Certify Javascript -->\n";
+
+echo "</body>\n";
+echo "</html>\n";
+?>
+
+<?php
+
+echo "<!-- Start Alexa Certify Javascript -->\n";
+echo "<script type=\"text/javascript\">\n";
+echo "_atrk_opts = { atrk_acct:\"jT90m1a8FRh2cN\", domain:\"learncodinganywhere.com\",dynamic: true};\n";
+echo "(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = \"https://d31qbv1cthcecs.cloudfront.net/atrk.js\"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();\n";
+echo "</script>\n";
+echo "<noscript><img src=\"https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=jT90m1a8FRh2cN\" style=\"display:none\" height=\"1\" width=\"1\" alt=\"\" /></noscript>\n";
+echo "<!-- End Alexa Certify Javascript -->  \n";
+echo "\n";
+echo "    <script src=\"https://code.jquery.com/jquery-2.1.4.min.js\"></script>\n";
+echo "    <script src=\"js/bootstrap.min.js\"></script>\n";
+echo "    <script src=\"js/npm.js\"></script>\n";
+echo "		<script>\n";
+echo "		$(document).ready(function() {\n";
+echo "			var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);\n";
+echo "			if (w <657) {\n";
+echo "				$('#img_1').insertBefore('#location_1');\n";
+echo "			}\n";
+echo "			function waitThenDoSomething(waitTimeInMS, myAction) {\n";
+echo "			    setTimeout(function () {\n";
+echo "			        if (myAction == \"displayPopup\") {\n";
+echo "			            $('#myModalPopUp').modal('show');\n";
+echo "			        }\n";
+echo "			    }, waitTimeInMS); //time in ms to wait before modal dialog box shows up.\n";
+echo "			}\n";
+echo "			if (document.referrer == \"http://learncodinganywhere.com/index.html\" || document.referrer == \"http://learncodinganywhere.com/\") {\n";
+echo "			    waitThenDoSomething(0, \"displayPopup\"); //this function waits 0 milliseconds before displaying a popup.\n";
+echo "			    //I left the wait function here so that if you change your mind and decide you want to wait before showing \n";
+echo "			    //the modal dialog box, it's as easy as changing the 0 above to a different number, rather than recoding \n";
+echo "			    //all of it again.\n";
+echo "			}\n";
+echo "			$(window).ready(function () { $(window).scroll() });\n";
+echo "			$(window).scroll(function () {\n";
+echo "			    $(\".slideanim\").each(function () {\n";
+echo "			        var pos = $(this).offset().top;\n";
+echo "\n";
+echo "			        var winTop = $(window).scrollTop();\n";
+echo "			        if (pos < winTop + $(window).height()) {\n";
+echo "			            $(this).addClass(\"slide\");\n";
+echo "			        }\n";
+echo "			    });\n";
+echo "			});\n";
+echo "		});\n";
+echo "		\n";
+echo "			\n";
+echo "	</script>\n";
+echo "\n";
+
+?>
+
+
+
+
