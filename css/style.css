@@ -8,6 +8,7 @@ body {
   padding-top: 115px;
   font-size: 1.4em; 
   font-family: 'Titillium Web', sans-serif;
+  max-width: 98.9%;
   }
 
 .header h1 {
@@ -23,13 +24,32 @@ h2, h4{
     color: rgba(255,255,255,1);
 }
 
-.navbar-header button {
+.header button {
   background: #004271; 
 }
 
 .navbar-header button span.icon-bar {
     background: #fff;
 }
+
+
+.navbar ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    overflow: hidden;
+}
+.navbar li {
+    font-size: 120%;
+    white-space:nowrap;
+}
+.navbar li:hover {
+    font-size: 160%;
+    font-weight: bold;
+}
+
+
 
 .dropdown-menu {
     font-size: 1.1em;
@@ -152,6 +172,10 @@ h2, h4{
  .bullets{
 	 font-size: 80%;
  }
+
+
+
+
  
  /* CONTACT INFO PAGE_SPECIFIC CSS */
  #contactForm  #Email {
@@ -782,6 +806,10 @@ a.btn-lg:active
     visibility: visible; 
 }
 
+.textBased p:first-child {
+    padding-top: 2em;
+}
+
 @keyframes slide {
     0% {
         opacity: 0;
@@ -802,3 +830,4 @@ a.btn-lg:active
         -webkit-transform: translateY(0%);
     }
 }
+
