@@ -31,6 +31,29 @@ h2, h4{
     background: #fff;
 }
 
+<<<<<<< HEAD
+=======
+
+.navbar ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    overflow: hidden;
+}
+.navText {
+    font-size: 1.5em;
+    white-space:nowrap;
+    padding: 1em;
+}
+.navText:hover {
+    font-size: 1.6em;
+    font-weight: bold;
+}
+
+
+
+>>>>>>> 1032201fb5a66484310cffe99a2667400b436c1a
 .dropdown-menu {
     font-size: 1.1em;
 }
@@ -206,6 +229,21 @@ h2, h4{
 	margin-right: 10% !important;
 	padding: 10px !important;
 	margin-top: 10px !important;
+
+}
+
+ #contactForm  #MessagePopUp {
+    height: 150px !important;
+	font-size: 14px;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 5px !important;
+	margin-top: 5px !important;
 
 }
 
@@ -793,6 +831,26 @@ a.btn-lg:active
     visibility: visible; 
 }
 
+<<<<<<< HEAD
+=======
+.textBased p:first-child {
+    font-size: 1.2em;
+    padding-top: 1.5em;
+}
+
+
+
+.bullets:hover, .bullets:focus, .bullets:active {
+   text-shadow: 1px 0px 20px white;
+   -webkit-transition: width 0.3s; /*Safari & Chrome*/
+   transition: width 0.3s;
+   -moz-transition: width 0.3s; /* Firefox 4 */
+   -o-transition: width 0.3s; /* Opera */
+}
+
+
+
+>>>>>>> 1032201fb5a66484310cffe99a2667400b436c1a
 @keyframes slide {
     0% {
         opacity: 0;
