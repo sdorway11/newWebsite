@@ -5,10 +5,9 @@ html {
   }
 
 body {
-  padding-top: 115px;
+  padding-top: 115px; /* 115px was here*/
   font-size: 1.4em; 
   font-family: 'Titillium Web', sans-serif;
-  max-width: 98.9%;
   }
 
 .header h1 {
@@ -24,32 +23,13 @@ h2, h4{
     color: rgba(255,255,255,1);
 }
 
-.header button {
+.navbar-header button {
   background: #004271; 
 }
 
 .navbar-header button span.icon-bar {
     background: #fff;
 }
-
-
-.navbar ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    width: 100%;
-    overflow: hidden;
-}
-.navbar li {
-    font-size: 120%;
-    white-space:nowrap;
-}
-.navbar li:hover {
-    font-size: 160%;
-    font-weight: bold;
-}
-
-
 
 .dropdown-menu {
     font-size: 1.1em;
@@ -172,11 +152,6 @@ h2, h4{
  .bullets{
 	 font-size: 80%;
  }
-
-
-
-
-
  
  /* CONTACT INFO PAGE_SPECIFIC CSS */
  #contactForm  #Email {
@@ -301,7 +276,7 @@ ul.nav a:hover {
   }
 
 div.row {
-  margin-top: 0px;
+  margin-top: 0px; 
   overflow: hidden;
   padding: 0px;
 }
@@ -309,10 +284,10 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
     padding-left: 25px;
     padding-right: 25px;
 	/*margin-top: 15px; /*THIS WAS THE ROOT CUASE OF GRID ON MOBILE HAVING SPACE BETWEEN SOME ROWS. WE MAY NEED TO SEPERATE OUT MOBILE-VS-DESKTOP ON THIS*/
-    margin-top: 0px;
+    margin-top: 0px; 
 }
   div.row.tiles {
-    margin: 0px; }
+    margin: 0px; } 
     div.row.tiles img {
       width: 200px; }
         div.row.tiles img.img_fit {
@@ -322,9 +297,10 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
   div.row img.img_fit {
     width: 100%; 
     /*height: 100%;*/
-  }
+	}
+	
   div.row div {
-    padding: 0px; /*THIS IS CAUSING THE ISSUE WITH TESTIMONIALS PAGE. 0 MAKES HOMEPAGE WORK, BUT TESTIMONIALS PAGE IMAGES CUT OFF. 30 MAKES TESTIMONIALS WORK, BUT BREAKS HOMEPAGE*/
+    padding: 0px; /* THIS IS CAUSING THE ISSUE WITH TESTIMONIALS PAGE. 0 MAKES HOMEPAGE WORK, BUT TESTIMONIALS PAGE IMAGES CUT OFF. 30 MAKES TESTIMONIALS WORK, BUT BREAKS HOMEPAGE*/
     border-radius: 0px;
     font-size: 1.1em; }
 
@@ -346,15 +322,25 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
         padding-top: 0px; }
 
 .row [class*="col-"].newTiledInfoBlack{
-  margin-bottom: -99999px;
-  padding-bottom: 99999px;
+  margin-bottom: -99999px; 
+  padding-bottom: 99999px; 
 }
 
 .row [class*="col-"].newTiledInfoWhite{
   margin-bottom: -99999px;
-  padding-bottom: 99999px;
+  padding-bottom: 99999px; 
+  margin-top: -100px; /* newly added*/
+  padding-top: -100px; /* newly added*/
 }
+	#col-lg-6 {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+	}
 
+	#col-lg-6:hover #img_1 {
+    opacity: 0.4;
+    transition: opacity 0.3s ease-in-out;
+	}
 
 #carousel-home {
   display: block;
@@ -376,7 +362,7 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
     margin-bottom: -9px;
     margin-left: 0px;
     margin-right: 0px;
-    margin-top: 0px;
+    margin-top: 0px; 
     max-width: 99999999px;
 } 
 
@@ -469,7 +455,7 @@ body.stories div.row div.img1, body.stories div.row div.img2, body.stories div.r
   background-size: cover; }
 body.stories div.row div blockquote {
   background: rgba(255, 255, 255, 0.7);
-  margin: 150px 10px 10px; }
+  margin: 150px 10px 10px; } 
 
 .contact {
     background: rgba(45, 45, 48,1) !important;
@@ -569,7 +555,7 @@ blockquote {
     }
 	  
     #first {
-        padding-top: 0px;
+        padding-top: 0px; 
     }
    
     footer .footer_nav {
@@ -582,7 +568,7 @@ blockquote {
         margin-bottom: -30px;
         margin-top: 0px;
         padding-top: 0px;
-        padding-bottom: 30px;
+        padding-bottom: 30px; 
         vertical-align: 50%;
     }
    
@@ -807,10 +793,6 @@ a.btn-lg:active
     visibility: visible; 
 }
 
-.textBased p:first-child {
-    padding-top: 2em;
-}
-
 @keyframes slide {
     0% {
         opacity: 0;
@@ -831,4 +813,29 @@ a.btn-lg:active
         -webkit-transform: translateY(0%);
     }
 }
+/* Animation for pages*/
 
+@keyframes image {
+   /* 0%   {background-color: red;} */
+    25%  {background-color: olive;}
+    50%  {background-color: grey;}
+   /* 100% {background-color: green;} */
+}
+/* div  {
+    animation-name: image;
+    animation-duration: 5s;
+} */
+
+.row [class*="col-"] {
+	animation-name: image;
+    animation-duration: 5s;
+	}
+/* Image changes Transparency on hover */
+img {
+    opacity: 0.4;
+    filter: alpha(opacity=40); 
+}
+img:hover {
+    opacity: 1.0;
+    filter: alpha(opacity=100); 
+}
