@@ -32,6 +32,18 @@ h2, h4{
     background: #fff;
 }
 
+.navbar-toggle {
+    background-color: #004271;
+}
+
+.masthead {
+    background-color:rgba(0, 0, 0, 0.5);
+}
+
+.navbar-inner {
+    background:transparent;
+}
+
 
 .navbar ul {
     margin: 0;
@@ -46,14 +58,18 @@ h2, h4{
     padding: 1em;
 }
 .navText:hover {
-    font-size: 1.6em;
+    animation: scale .5s forwards;
     font-weight: bold;
 }
 
 
 
+
+
 .dropdown-menu {
+    position: relative;
     font-size: 1.1em;
+    overflow: hidden;
 }
 	
 .footer {
@@ -811,21 +827,43 @@ a.btn-lg:active
     color:rgba(0,0,0,1);  
 }
 
-.slideanim {visibility:hidden;}
+
+.popOutBig{
+    width: 60%;
+}
+
+.popOutSmall{
+    width: 40%;
+}
+
+
 .slide {
     /* The name of the animation */
     animation-name: slide;
     -webkit-animation-name: slide; 
     /* The duration of the animation */
-    animation-duration: 1s; 
-    -webkit-animation-duration: 1s;
+    animation-duration: .6s; 
+    -webkit-animation-duration: .6s;
     /* Make the element visible */
     visibility: visible; 
 }
 
+
 .textBased p:first-child {
     font-size: 1.2em;
     padding-top: 1.5em;
+}
+
+.textBased p:nth-child(2), .textBased p:nth-child(3), .textBased p:nth-child(4), .textBased p:nth-child(5){
+    font-size: 1em;
+    width: 90%;
+    text-align: justify;
+    position: relative; 
+    left: 5%;
+}
+
+.textBased:first-child p:nth-child(2), .textBased:first-child p:nth-child(3), .textBased:first-child p:nth-child(4){
+    font-size: .94em;
 }
 
 
@@ -837,6 +875,26 @@ a.btn-lg:active
    -moz-transition: width 0.3s; /* Firefox 4 */
    -o-transition: width 0.3s; /* Opera */
 }
+
+/*.row:first-child:hover{
+    width: 100%;
+    height: 100%;
+}
+
+#tiles:first-child:hover + #tiles:nth-child(2){
+    width: 100%;
+    height: 100%;
+}
+
+#col2row1:hover{
+    width: 60%;
+    height: 120%;
+}
+
+#col2row1:hover - #col1row1{
+    width: 40%;
+    height: 100%;
+}*/
 
 
 
@@ -859,5 +917,19 @@ a.btn-lg:active
         opacity: 1;
         -webkit-transform: translateY(0%);
     }
+}
+
+
+@-webkit-keyframes scale{
+     0% {
+        transform: scale(1);
+        -ms-transform: scale(1); /* IE 9 */
+        -webkit-transform: scale(1); /* Safari and Chrome */
+     }
+     100% {
+        transform: scale(1.5);
+        -ms-transform: scale(1.5); /* IE 9 */
+        -webkit-transform: scale(1.5); /* Safari and Chrome */
+     }
 }
 
