@@ -7,9 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Digital Tour</title>
-	
 		<!--  Font Awesome  -->
 	<link href="fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
@@ -86,14 +84,16 @@
         </div>
 
         <div class="row">
-            <h2>Digital Tour</h2>
-            <p class="lead">The Software Developer Boot Camp is available in full online and can be taken from anywhere in the world. We have online students all across America and in other countries. For example, there are students studying our program from their homes in Europe.</p>
-            <p class="lead">The Tech Academy itself is located in beautiful Portland, Oregon. All of our employees are located at our Portland office and for students who live in Oregon, the program can be done at the Portland campus. Are you in Portland? Come on down for a tour! Here are some photos of our offices:</p>
+           <!-- <h2>Digital Tour</h2> -->
+            <p style="text-align:justify;" class="lead">The Software Developer Boot Camp is available in full online and can be taken from anywhere in the world. We have online students all across America and in other countries. For example, there are students studying our program from their homes in Europe.</p>
+            <p style="text-align:justify;" class="lead"> The Tech Academy is located in beautiful Portland, Oregon. All of our employees are located at our Portland office and for students who live in Oregon, the program can be done at the Portland campus. Are you in Portland? Come on down for a tour! Here are some photos of our offices:</p>
         </div>
         <div class="row slideanim">
-            
+			<!---<img src="images/tour/arrowR.jpg" id="rightArrow"> 
+			<img src="images/tour/arrowL.jpg" id="leftArrow"> -->
+            <div align="center"> <!-- to align slideshow pictures to center-->
             <div class="your-class">
-                <div><img src="images/tour/Academy%201%20(2).JPG"></div>
+                <!-- removed first picture-->
                 <div><img src="images/tour/Academy%2010.JPG"></div>
                 <div><img src="images/tour/Academy%2011.JPG"></div>
                 <div><img src="images/tour/Academy%202.JPG"></div>
@@ -120,7 +120,9 @@
                 <div><img src="images/tour/Remote%20Delivery%202.JPG"></div>
                 <div><img src="images/tour/Student%20Lounge.JPG"></div>
             </div>
+			</div>
         </div>
+		
         <div class="row">
             <br />
             <p class="lead">Are you interested in attending in-person or from home? <a href="contact.html">Contact us</a> now. You can start today!</p>
@@ -225,16 +227,16 @@ _atrk_opts = { atrk_acct:"jT90m1a8FRh2cN", domain:"learncodinganywhere.com",dyna
     
     <script>
         $(document).ready(function(){
-            $('.your-class').slick({
+		        $('.your-class').slick({
                 dots: true,
                 infinite: true,
-                speed: 500,
+                speed: 1500,
                 fade: true,
                 cssEase: 'linear',
                 adaptiveHeight: true,
                 autoplay: true,
                 autoplaySpeed: 5000,
-            });
+            });		
             function waitThenDoSomething(waitTimeInMS, myAction) {
                 setTimeout(function () {
                     if (myAction == "displayPopup") {
@@ -260,7 +262,7 @@ _atrk_opts = { atrk_acct:"jT90m1a8FRh2cN", domain:"learncodinganywhere.com",dyna
                 });
             });
         });
-
+		
     </script>
 </body>
 </html>
