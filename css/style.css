@@ -491,10 +491,10 @@ body.stories div.row div.img6 {
 body.stories div.row div.img7 {
   background: url(../images/Testimonials%207.png); }
 body.stories div.row div.img1, body.stories div.row div.img2, body.stories div.row div.img3, body.stories div.row div.img4, body.stories div.row div.img5, body.stories div.row div.img6, body.stories div.row div.img7 {
- background-size: cover !important; background-size:100% 100% !important ; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;} /* background-sizes are added, it stretches out pictures*/
+background-size: cover ; margin: 20px; background-size:100% 100% !important ; -webkit-background-size: cover ; -moz-background-size: cover ; -o-background-size: cover !important;} /*background-sizes are added, it stretches out pictures*/
 body.stories div.row div blockquote {
-  background: rgba(255, 255, 255, 0.7);
-  margin: 175px 15px 15px; } /* it was margin: 150px 10px 10px */
+background: rgba(255, 255, 255, 0.7);
+margin: 150px 10px 10px; } 
 
 .contact {
     background: rgba(45, 45, 48,1) !important;
@@ -839,7 +839,7 @@ a.btn-lg:active
     animation-name: slide;
     -webkit-animation-name: slide; 
     /* The duration of the animation */
-    animation-duration: 1s; 
+    animation-duration: 2s; 
     -webkit-animation-duration: 1s;
     /* Make the element visible */
     visibility: visible; 
@@ -915,20 +915,20 @@ a.btn-lg:active
 
 
 @keyframes textblock {
-   /* 0%   {background-color: red;} */
-    25%  {background-color: olive;}
-    50%  {background-color: grey;}
-   /* 100% {background-color: green;} */
+	1%  {background-color: olive;}
+	50% {background-color:lavender;}
+    100%  {background-color: lavenderblush;}
 }
 
 div  {
     animation-name: textblock;
     animation-duration: 5s;
-} 
-/*.row [class*="col-"] {
+}  
+.row [class*="col-"] {
 	animation-name: textblock;
     animation-duration: 5s;
-	} */
+	} 
+	
 /* Image changes Transparency on hover */
 img {
     opacity: 0.4;
