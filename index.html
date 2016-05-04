@@ -432,59 +432,10 @@ _atrk_opts = { atrk_acct:"jT90m1a8FRh2cN", domain:"learncodinganywhere.com",dyna
 		        });
 		    });
 
-		    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ? true : false;
 
-		    
-		    if (!isMobile) {
-		        $('#col1row1').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col1row1').hover(
-                    function () { $('#col2row1').addClass('popOutSmall') },
-                    function () { $('#col2row1').removeClass('popOutSmall') });
-
-		        $('#col2row1').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col2row1').hover(
-                    function () { $('#col1row1').addClass('popOutSmall') },
-                    function () { $('#col1row1').removeClass('popOutSmall') });
-
-		        $('#col1row2').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col1row2').hover(
-                    function () { $('#col2row2').addClass('popOutSmall') },
-                    function () { $('#col2row2').removeClass('popOutSmall') });
-
-		        $('#col2row2').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col2row2').hover(
-                    function () { $('#col1row2').addClass('popOutSmall') },
-                    function () { $('#col1row2').removeClass('popOutSmall') });
-
-		        $('#col1row3').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col1row3').hover(
-                    function () { $('#col2row3').addClass('popOutSmall') },
-                    function () { $('#col2row3').removeClass('popOutSmall') });
-
-		        $('#col2row3').hover(
-                    function () { $(this).addClass('popOutBig') },
-                    function () { $(this).removeClass('popOutBig') });
-		        $('#col2row3').hover(
-                    function () { $('#col1row3').addClass('popOutSmall') },
-                    function () { $('#col1row3').removeClass('popOutSmall') });
-
-		        $('#col2row3').hover(
-                    function () { $('#col1row4').addClass('popOutBig') },
-                    function () { $('#col1row4').removeClass('popOutBig') });
-		        $('#col2row3').hover(
-                    function () { $('#col2row4').addClass('popOutSmall') },
-                    function () { $('#col2row4').removeClass('popOutSmall') });
-		    }
+		    $('.slideanim').hover(
+                function () { $(this).addClass('fadeIn') },
+                function () { $(this).removeClass('fadeIn') });
 	    });
             
 
