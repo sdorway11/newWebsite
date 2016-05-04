@@ -31,8 +31,7 @@ h2, h4{
     background: #fff;
 }
 
-<<<<<<< HEAD
-/*<<<<<<< HEAD*/
+
 
 .navbar-toggle {
     background-color: #004271;
@@ -68,12 +67,11 @@ h2, h4{
 
 
 
-/*=======
->>>>>>> origin/master*/
-=======
->>>>>>> origin/master
+
 .dropdown-menu {
+    position: relative;
     font-size: 1.1em;
+    background-color: transparent;
 }
 	
 .footer {
@@ -822,15 +820,8 @@ a.btn-lg:active
     color:rgba(0,0,0,1);  
 }
 
-<<<<<<< HEAD
 
-.popOutBig{
-    width: 60%;
-}
 
-.popOutSmall{
-    width: 40%;
-}
 
 .slideanim {
     opacity: .8;
@@ -841,9 +832,8 @@ a.btn-lg:active
 }
 
 
-=======
 .slideanim {visibility:hidden;}
->>>>>>> origin/master
+
 .slide {
     /* The name of the animation */
     animation-name: slide;
@@ -855,8 +845,7 @@ a.btn-lg:active
     visibility: visible; 
 }
 
-<<<<<<< HEAD
-/*<<<<<<< HEAD*/
+
 
 .textBased p:first-child {
     font-size: 1.2em;
@@ -886,12 +875,7 @@ a.btn-lg:active
 }
 
 
-/*=======
->>>>>>> origin/master*/
 
-
-=======
->>>>>>> origin/master
 @keyframes slide {
     0% {
         opacity: 0;
@@ -914,8 +898,7 @@ a.btn-lg:active
 }
 /* Animation for pages*/
 
-<<<<<<< HEAD
-/*<<<<<<< HEAD*/
+
 
 @-webkit-keyframes scale{
      0% {
@@ -930,9 +913,7 @@ a.btn-lg:active
      }
 }
 
-/*/=======*/
-=======
->>>>>>> origin/master
+
 @keyframes textblock {
    /* 0%   {background-color: red;} */
     25%  {background-color: olive;}
@@ -957,7 +938,7 @@ img:hover {
     opacity: 1.0;
     filter: alpha(opacity=100); 
 }
-<<<<<<< HEAD
+
 /* centering slide show*/
 
 .your-class { 
@@ -968,7 +949,7 @@ img:hover {
 } 
 /*
 >>>>>>> origin/master*/
-=======
+
 
 /* Image changes Transparency on hover Testimonial Page*/
 
@@ -1028,4 +1009,4 @@ body.stories div.row div.img7:hover {
     opacity: 1.0;
     filter: alpha(opacity=100); 
 }
->>>>>>> origin/master
+
