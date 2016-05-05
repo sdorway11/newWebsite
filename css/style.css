@@ -42,9 +42,46 @@ h2, h4{
     background: #fff;
 }
 
+<<<<<<< HEAD
 .dropdown-menu {
     font-size: 1.1em;
+=======
+
+
+.navbar-toggle {
+    background-color: #004271;
 }
+
+.masthead {
+    background-color:rgba(0, 0, 0, 0.5);
+}
+
+.navbar-inner > li{
+    background:transparent;
+    background-color: transparent;
+
+}
+
+.navText {
+    font-size: 1.5em;
+    white-space:nowrap;
+    padding: 1em;
+}
+.navText:hover {
+    animation: scale .5s forwards;
+    font-weight: bold;
+}
+
+
+
+
+
+
+.dropdown-menu {
+    font-size: inherit;
+>>>>>>> origin/master
+}
+
 	
 .footer {
   display: block;
@@ -161,8 +198,9 @@ h2, h4{
  }
  
  .bullets{
-	 font-size: 80%;
+	 font-size: 99%;
  }
+
  
  /* CONTACT INFO PAGE_SPECIFIC CSS */
  #contactForm  #Email {
@@ -218,6 +256,20 @@ h2, h4{
 	padding: 10px !important;
 	margin-top: 10px !important;
 
+}
+
+#MessagePopUp {
+    height: 100px !important;
+	font-size: 14px;
+    border: 5px solid rgba(45, 45, 48,1) !important;
+    background: transparent !important;
+    color: rgba(45, 45, 48,1) !important;
+    letter-spacing: 1px !important;
+	width: 80% !important;
+	margin-left: 10% !important;
+	margin-right: 10% !important;
+	padding: 10px !important;
+	margin-top: 5px !important;
 }
 
  #contactForm  #Name {
@@ -276,7 +328,7 @@ ul.nav a:hover {
     background-color:  #fff; /*BACKGROUND COLOR OF SELECTION RECTANGLE*/
 }
 
-  .nav-justified > li > a {
+.nav-justified > li > a {
     padding-top: 0px;
     padding-bottom: 0px;
     margin-bottom: 0;
@@ -284,7 +336,7 @@ ul.nav a:hover {
     color: #777; /*TEXT COLOR IN NAVBAR*/
     text-align: center; 
 
-  }
+}
 
 div.row {
   margin-top: 0px; 
@@ -792,6 +844,26 @@ a.btn-lg:active
     color:rgba(0,0,0,1);  
 }
 
+<<<<<<< HEAD
+=======
+
+
+
+
+.slideanim {
+    opacity: .8;
+}
+
+#col2row2{
+    opacity: .9;
+}
+
+.fadeIn {
+    opacity: 1;
+}
+
+
+>>>>>>> origin/master
 .slideanim {visibility:hidden;}
 .slide {
     /* The name of the animation */
@@ -851,6 +923,20 @@ img:hover {
     filter: alpha(opacity=100); 
 }
 
+<<<<<<< HEAD
+=======
+/* centering slide show*/
+
+.your-class { 
+  margin-right: 0px; 
+  margin-left: 0px; // center
+  /*width: 2365px;  small screen the page look centered*/
+  text-align:center; 
+} 
+
+
+
+>>>>>>> origin/master
 /* Image changes Transparency on hover Testimonial Page*/
 
 body.stories div.row div.img1 {
