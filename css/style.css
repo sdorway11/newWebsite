@@ -409,8 +409,9 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
   display: block;
   margin: 0px; /*WAS 10PX AUTO*/
   width: 100%;
+}
 
-  }
+
   
 .scholarship{
 	color: blue;
@@ -564,6 +565,10 @@ blockquote {
         height: inherit !important;
     }
 
+.carousel-image{
+    opacity: .9;
+}
+
 @media screen and (min-width: 1201px) and (max-width: 1365px) {
 .carousel-caption {
   top: 60%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
@@ -703,16 +708,27 @@ blockquote {
     max-width: 99999999px;
     } 
     .carousel-caption {
-        top: 65%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+        top: 55%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
     }
 
     .carousel-caption > p{
-        font-size: 10px;
+        font-size: 80%;
     }
 
     .carousel-caption > h1{
-        font-size: 15px;
+        font-size: 100%;
     }
+
+    .tales {
+        width: 100%;
+    }
+
+    .carousel-inner{
+        width:100%;
+        max-height: 80% !important;
+    }
+
+
 
     .onlyDisplayOnMobile{
         visibility: visible;
@@ -720,6 +736,46 @@ blockquote {
     .onlyDisplayOnDesktop{
         visibility: hidden;
         height: 0px !important;
+    }
+}
+
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {}
+
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    .carousel-caption {
+        top: 60%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+    }
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    .carousel-caption {
+        top: 60%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+    }
+}
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .carousel-caption {
+        top: 50%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
+    }
+
+    .tales {
+        width: 100%;
+    }
+
+    .carousel-inner{
+        width:100%;
+        max-height: 380px !important;
+    }
+}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+    .carousel-caption {
+        top: 40%; /*PREVENTS TEXT IN THE CAROUSEL FROM GETTING CUTOFF*/
     }
 }
 	
