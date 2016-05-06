@@ -42,46 +42,9 @@ h2, h4{
     background: #fff;
 }
 
-<<<<<<< HEAD
 .dropdown-menu {
     font-size: 1.1em;
-=======
-
-
-.navbar-toggle {
-    background-color: #004271;
 }
-
-.masthead {
-    background-color:rgba(0, 0, 0, 0.5);
-}
-
-.navbar-inner > li{
-    background:transparent;
-    background-color: transparent;
-
-}
-
-.navText {
-    font-size: 1.5em;
-    white-space:nowrap;
-    padding: 1em;
-}
-.navText:hover {
-    animation: scale .5s forwards;
-    font-weight: bold;
-}
-
-
-
-
-
-
-.dropdown-menu {
-    font-size: inherit;
->>>>>>> origin/master
-}
-
 	
 .footer {
   display: block;
@@ -198,9 +161,8 @@ h2, h4{
  }
  
  .bullets{
-	 font-size: 99%;
+	 font-size: 80%;
  }
-
  
  /* CONTACT INFO PAGE_SPECIFIC CSS */
  #contactForm  #Email {
@@ -256,20 +218,6 @@ h2, h4{
 	padding: 10px !important;
 	margin-top: 10px !important;
 
-}
-
-#MessagePopUp {
-    height: 100px !important;
-	font-size: 14px;
-    border: 5px solid rgba(45, 45, 48,1) !important;
-    background: transparent !important;
-    color: rgba(45, 45, 48,1) !important;
-    letter-spacing: 1px !important;
-	width: 80% !important;
-	margin-left: 10% !important;
-	margin-right: 10% !important;
-	padding: 10px !important;
-	margin-top: 5px !important;
 }
 
  #contactForm  #Name {
@@ -328,7 +276,7 @@ ul.nav a:hover {
     background-color:  #fff; /*BACKGROUND COLOR OF SELECTION RECTANGLE*/
 }
 
-.nav-justified > li > a {
+  .nav-justified > li > a {
     padding-top: 0px;
     padding-bottom: 0px;
     margin-bottom: 0;
@@ -336,7 +284,7 @@ ul.nav a:hover {
     color: #777; /*TEXT COLOR IN NAVBAR*/
     text-align: center; 
 
-}
+  }
 
 div.row {
   margin-top: 0px; 
@@ -900,26 +848,6 @@ a.btn-lg:active
     color:rgba(0,0,0,1);  
 }
 
-<<<<<<< HEAD
-=======
-
-
-
-
-.slideanim {
-    opacity: .8;
-}
-
-#col2row2{
-    opacity: .9;
-}
-
-.fadeIn {
-    opacity: 1;
-}
-
-
->>>>>>> origin/master
 .slideanim {visibility:hidden;}
 .slide {
     /* The name of the animation */
@@ -979,20 +907,6 @@ img:hover {
     filter: alpha(opacity=100); 
 }
 
-<<<<<<< HEAD
-=======
-/* centering slide show*/
-
-.your-class { 
-  margin-right: 0px; 
-  margin-left: 0px; // center
-  /*width: 2365px;  small screen the page look centered*/
-  text-align:center; 
-} 
-
-
-
->>>>>>> origin/master
 /* Image changes Transparency on hover Testimonial Page*/
 
 body.stories div.row div.img1 {
@@ -1051,3 +965,79 @@ body.stories div.row div.img7:hover {
     opacity: 1.0;
     filter: alpha(opacity=100); 
 }
+/*CSS for enlarged image on hover*/
+
+/***css Style the unordered list with the class 'enlarge'***/
+ul.enlarge{
+list-style-type:none; /*remove the bullet point*/
+padding:0px; /*removes extra space*/
+}
+ul.enlarge li{
+/*display:inline-block; /*places the images in a line*/
+position: relative; /*allows precise positioning of the popup image when used with position:absolute  */
+z-index: 0; /*resets the stack order of the list items - we'll increase in step 4*/
+/*margin:10px 40px 0 20px; space between the images*/
+}
+/* to hide large if no hover*/ 
+/***In the HTML in step one we placed the large image inside a <span>, now we move it off the page until it's required***/
+ul.enlarge span{
+position:absolute; /*see support section for more info on positioning*/
+left: -9999px; /*moves the span off the page, effectively hidding it from view*/
+}
+
+/***Note: This styling will apply to both the thumbnail and popup image, unless you override these styles in step five***/
+ul.enlarge img{
+/*give the thumbnails a frame*/
+background-color:#eae9d4; /*frame colour*/
+padding: 6px; /*frame size*/
+/*add a drop shadow to the frame*/
+-webkit-box-shadow: 0 0 6px rgba(132, 132, 132, .75);
+-moz-box-shadow: 0 0 6px rgba(132, 132, 132, .75);
+box-shadow: 0 0 6px rgba(132, 132, 132, .75);
+/*and give the corners a small curve*/
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+margin: 10px
+}
+ul.enlarge li:hover{
+z-index: 50; /*places the popups infront of the thumbnails, which we gave a z-index of 0 in step 1*/ 
+cursor:pointer; /*changes the cursor to a hand*/
+}
+
+/*** bring the large image back onto the page by reducing left from -9999px (set in step 2) to figure below***/ 
+ul.enlarge li:hover span{ /*positions the <span> when the <li> (which contains the thumbnail) is hovered*/ 
+top: 10px; /*the distance from the bottom of the thumbnail to the top of the popup image*/
+left: 400px; /*distance from the left of the thumbnail to the left of the popup image*/
+}
+
+/***Override the styling of images set in step 3 to make the frame smaller and the background darker***/
+ul.enlarge span img{
+padding: 2px; /*size of the frame*/
+background: #ccc; /*colour of the frame*/
+}
+/***Style the <span> containing the framed images and the caption***/
+ul.enlarge span{
+/**Style the frame**/
+padding: 10px; /*size of the frame*/
+background:#eae9d4; /*colour of the frame*/
+/*add a drop shadow to the frame*/
+-webkit-box-shadow: 0 0 20px rgba(0,0,0, .75));
+-moz-box-shadow: 0 0 20px rgba(0,0,0, .75);
+box-shadow: 0 0 20px rgba(0,0,0, .75);
+/*give the corners a curve*/
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px;
+border-radius:8px;
+/**Style the caption**/
+font-family: 'Droid Sans', sans-serif; /*Droid Sans is available from Google fonts*/
+font-size:.9em;
+text-align: center;
+color: #495a62;
+}
+
+
+
+
+
+
