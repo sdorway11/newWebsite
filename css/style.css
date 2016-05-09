@@ -46,28 +46,12 @@ h2, h4{
 }
 
 
-
-
-.navbar ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    width: 100%;
-    overflow: hidden;
-}
-
-.navbar-inner > li{
-    background:transparent;
-    background-color: transparent;
-
-}
-
-
 .navText {
     font-size: 1.5em;
     white-space:nowrap;
     padding: 1em;
 }
+
 .navText:hover {
     animation: scale .5s forwards;
     font-weight: bold;
