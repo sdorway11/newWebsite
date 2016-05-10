@@ -357,15 +357,7 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
   //margin-top: -100px; /* newly added*/
   //padding-top: -100px; /* newly added*/
 }
-	#col-lg-6 {
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out;
-	}
 
-	#col-lg-6:hover #img_1 {
-    opacity: 0.4;
-    transition: opacity 0.3s ease-in-out;
-	}
 
 #carousel-home {
   display: block;
@@ -527,9 +519,7 @@ blockquote {
         height: inherit !important;
     }
 
-.carousel-image{
-    opacity: .9;
-}
+
 
 @media screen and (min-width: 1201px) and (max-width: 1365px) {
 .carousel-caption {
@@ -974,18 +964,6 @@ div  {
 	animation-name: textblock;
     animation-duration: 5s;
 	}
-	
-/* Image changes Transparency on hover */
-img {
-    opacity: 0.4;
-    filter: alpha(opacity=40); 
-}
-img:hover {
-    opacity: 1.0;
-    filter: alpha(opacity=100); 
-}
-
-
 
 
 /* centering slide show*/
