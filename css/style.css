@@ -969,8 +969,9 @@ div  {
 /* centering slide show*/
 
 .your-class { 
-  margin-right: 0px; 
-  margin-left: 0px; // center
+	/* changed margins from 0px to 15% to fix nav arrows not showing */
+  margin-right: 15%; 
+  margin-left: 15%; // center
   /*width: 2365px;  small screen the page look centered*/
   text-align:center; 
 } 
