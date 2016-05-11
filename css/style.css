@@ -167,7 +167,7 @@ h2, h4{
  
  #topButton{
 	margin-left: 0px !important;
-    font-size: 90%;
+    font-size: .9em;
  }
  
  #topList {
@@ -1110,6 +1110,10 @@ font-family: 'Droid Sans', sans-serif; /*Droid Sans is available from Google fon
 font-size:.9em;
 text-align: center;
 color: #495a62;
+}
+#offEdges {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 
