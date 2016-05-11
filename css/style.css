@@ -971,12 +971,15 @@ div  {
 /* centering slide show*/
 
 .your-class { 
-	/* changed margins from 0px to 15% to fix nav arrows not showing */
-  margin-right: 15%; 
-  margin-left: 15%; // center
+	/* changed margins from 0px to 18% to fix nav arrows not showing */
+  margin-right: 18%; 
+  margin-left: 18%; // center
   /*width: 2365px;  small screen the page look centered*/
   text-align:center; 
+  /* added margin to top for space between text and slideshow */
+  margin-top: 25px;
 } 
+
 
 
 /* Image changes Transparency on hover Testimonial Page*/
