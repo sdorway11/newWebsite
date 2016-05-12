@@ -1183,7 +1183,16 @@ color: #495a62;
     margin-right: 20px;
 }
 
-
+.margBottom {
+    margin-bottom: 40px;
+}
+.margBottomExtraLine {
+    margin-bottom: 11px;
+}
+.margFounders {
+    margin-bottom: 25px;
+    margin-top: 5px;
+}
 
 
 
