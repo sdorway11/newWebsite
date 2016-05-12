@@ -5,12 +5,8 @@ html {
   }
 
 body {
-<<<<<<< HEAD
-  padding-top: 115px; /* 115px was here*/
-=======
   max-width: 98.75%;
   padding-top: 115px;
->>>>>>> origin/master
   font-size: 1.4em; 
   font-family: 'Titillium Web', sans-serif;
   }
@@ -107,7 +103,7 @@ h2, h4{
 	text-align: center !important;*/
 	color: white !important;
 	display: inline-block !important;
-	font-size: 2em !important; */
+	font-size: 2em !important; 
 	text-decoration:none;
 }
 
@@ -176,10 +172,7 @@ h2, h4{
  
  #topButton{
 	margin-left: 0px !important;
-<<<<<<< HEAD
-=======
     font-size: .9em;
->>>>>>> origin/master
  }
  
  #topList {
@@ -187,9 +180,6 @@ h2, h4{
 	margin-left: 10px; 
  }
  
- .bullets{
-	 font-size: 80%;
- }
  
  /* CONTACT INFO PAGE_SPECIFIC CSS */
  #contactForm  #Email {
@@ -533,10 +523,10 @@ blockquote {
 }
 
 .onlyDisplayOnMobile{
-        visibility: hidden;
+        display: none;
     }
 .onlyDisplayOnDesktop{
-        visibility: visible;
+        display: block;
         height: inherit !important;
     }
 
@@ -581,10 +571,10 @@ blockquote {
     max-width: 99999999px;
     } 
     .onlyDisplayOnMobile{
-        visibility: visible;
+        display: block;
     }
     .onlyDisplayOnDesktop{
-        visibility: hidden;
+        display: none;
         height: 0px !important;
     }
 }
@@ -704,10 +694,11 @@ blockquote {
 
 
     .onlyDisplayOnMobile{
-        visibility: visible;
+        display: block;
+        
     }
     .onlyDisplayOnDesktop{
-        visibility: hidden;
+        display: none;
         height: 0px !important;
     }
 }
@@ -769,13 +760,12 @@ blockquote {
 }
 
  a.btn-lg {
-	display: block;
 	font-size: 1.1em;
 	font-weight: bold;
 	text-transform: uppercase;
 	padding-bottom: 0px;
 	padding-top: 0px;
-    margin: 20px auto;
+    margin: 16px auto;
 	color: #ccc;
 	background-color: #555;
 	background: -webkit-linear-gradient(#888, #555);
@@ -878,9 +868,13 @@ a.btn-lg:active
 
 
 
-.slideanim {
+/*.slideanim {
     opacity: .8;
-}
+}*/
+
+/*#col2row1 {
+    max-height: 20px;
+}*/
 
 #col2row2{
     opacity: .9;
@@ -974,7 +968,7 @@ a.btn-lg:active
 }
 
 
-@keyframes textblock {
+/*@keyframes textblock {
 	1%  {background-color: olive;}
 	50% {background-color:lavender;}
     100%  {background-color: lavenderblush;}
@@ -987,7 +981,7 @@ div  {
 .row [class*="col-"] {
 	animation-name: textblock;
     animation-duration: 5s;
-	}
+	}*/
 
 
 /* centering slide show*/
@@ -1001,52 +995,7 @@ div  {
   /* added margin to top for space between text and slideshow */
   margin-top: 25px;
 } 
-/* end centering slideshow*/
 
-
-/* employers page css */
-
-.emp-container {
-	line-height: 0;
-}
-
-.emp-row {
-	display: inline-block;
-	width: 100%;
-	line-height: 1.42857143;
-}
-
-.emp-row-left {
-	width: 50%;
-	height: 600px;
-	float: left; 
-}
-
-.emp-row-right {
-	width: 50%;
-	height 600px;
-	float: right;
-}
-
-.emp-logo-container {
-	margin-top: 20px;
-}
-
-.emp-logo-row {
-	display: inline-block;
-	width: 100%;
-	margin-top: 50px;
-}
-
-.logo {
-	height: 200px;
-	width: 200px;
-	margin-left: 15px;
-	margin-right: 15px;
-	
-}
-
-/* end employers page css */
 
 
 /* Image changes Transparency on hover Testimonial Page*/
@@ -1182,7 +1131,10 @@ color: #495a62;
     margin-left: 20px;
     margin-right: 20px;
 }
+.noBottom {
+    margin-bottom: 12px !important;
 
+}
 .margBottom {
     margin-bottom: 40px;
 }
@@ -1193,6 +1145,3 @@ color: #495a62;
     margin-bottom: 25px;
     margin-top: 5px;
 }
-
-
-
