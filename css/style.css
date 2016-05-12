@@ -5,7 +5,12 @@ html {
   }
 
 body {
+<<<<<<< HEAD
   padding-top: 115px; /* 115px was here*/
+=======
+  max-width: 98.75%;
+  padding-top: 115px;
+>>>>>>> origin/master
   font-size: 1.4em; 
   font-family: 'Titillium Web', sans-serif;
   }
@@ -21,6 +26,10 @@ h3{
 
 h2, h4{
     color: rgba(255,255,255,1);
+}
+
+#topList h2 {
+	font-size: 110%;
 }
 
 .navbar-header button {
@@ -167,6 +176,10 @@ h2, h4{
  
  #topButton{
 	margin-left: 0px !important;
+<<<<<<< HEAD
+=======
+    font-size: .9em;
+>>>>>>> origin/master
  }
  
  #topList {
@@ -266,6 +279,7 @@ h2, h4{
   text-align: center;
   background-color: transparent;
   margin-top: -45px;
+  margin-bottom: -35px;
 /* background: url(../images/pattern.png); 
 background-size: cover; */ }
   .jumbotron h1 {
@@ -275,6 +289,13 @@ background-size: cover; */ }
     color: #004271; }
   .jumbotron .btn {
     margin-top: 10px; }
+  
+ .jumbotron2 {
+   font-size: 2.1em;
+   font-family: 'Titillium Web', sans-serif;
+   font-style: none;
+   color: #004271;
+  }
 
 /* Customize the nav-justified links to be fill the entire space of the .navbar */
 .nav-justified {
@@ -743,6 +764,9 @@ blockquote {
     border: medium;
 }
 
+#topList a.btn-lg {
+	margin: 0px !important;
+}
 
  a.btn-lg {
 	display: block;
@@ -1153,6 +1177,10 @@ font-family: 'Droid Sans', sans-serif; /*Droid Sans is available from Google fon
 font-size:.9em;
 text-align: center;
 color: #495a62;
+}
+#offEdges {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 
