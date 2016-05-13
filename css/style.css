@@ -27,6 +27,9 @@ h2, h4{
 #topList h2 {
 	font-size: 110%;
 }
+.navbar {
+    opacity: 0.93;
+}
 
 .navbar-header button {
   background: #004271; 
