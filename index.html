@@ -94,7 +94,7 @@
 		<!-- <img src="images/Tech_Academy_Logo.png" class="tech_academy hidden-lg"/> THIS IS WHAT MAKES THE TECH ACADEMY LOGO APPEAR BELOW NAVBAR ON SMALL SCREEN SIZE -->
 
         <header class="header">
-            <h1>Learn to Code at The Tech Academy</h1>
+            <h1 id="indexHeaderText"><a href="contact.html" id="indexHeader">Learn to Code at The Tech Academy</a></h1>
         </header>
 	
 		<!-- tiled info -->
@@ -115,7 +115,7 @@
 
 
                 </div>
-                <div class="col-lg-6 newTiledInfoBlack  slideanim" id="col2row1">
+                <div class="col-lg-6 newTiledInfoBlack  slideanim popanim" id="col2row1">
 				    <div>
                         <div id="topList">
 						    <h2>
@@ -383,60 +383,61 @@ _atrk_opts = { atrk_acct:"jT90m1a8FRh2cN", domain:"learncodinganywhere.com",dyna
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/npm.js"></script>
 	<script>
-	    $(document).ready(function () {
-//	        function dontGiveMePopup() {
-//	            /* nothing to return */
-//	        }
-//	        window.onbeforeunload = function () {
-//	            window.setTimeout(function () { // escape function context
-//	                window.location = 'contact.html';
-//	            }, 0);
-//	            window.onbeforeunload = null;   // necessary to prevent infinite loop that kills the browser
-///
-//	            //return 'Would you like to learn more about The Tech Academy?';
-//	            // pressing leave will still leave, but the GET may be fired first anyway
-//	        }
-	        function waitThenDoSomething(waitTimeInMS, myAction) {
-	            setTimeout(function () {
-	                if (myAction == "displayPopup") {
-	                    $('#myModalPopUp').modal('show');
-	                }
-	            }, waitTimeInMS); //time in ms to wait before modal dialog box shows up.
-	        }
-	        function showContactForm(myAction) {
-	            $('#myModalPopUpContact').modal('show');
-	            $('#myModalPopUp').modal('hide');
-	        }
-	        waitThenDoSomething(60000, "displayPopup"); //this function waits 60000milliseconds before displaying a popup.
-	        $("a").click(function () { window.onbeforeunload = dontGiveMePopup; }); //don't make popup appear just because user clicked our site's hyperlink.
-	        document.getElementById("yes-modal-btn").onclick = function () { showContactForm(0,"displayPopup") };//this shows the contact form when yes is clicked on first popUp
-	        $("header").hide();
-	        $(".text-center").scrollTop(0);
-	        $(".container").hide();
-	        $("#coverPic").fadeOut(2000);
-	        $(".container").fadeIn(4000);
-	        $("header").fadeIn(4000);
-	        $(".text-center").scrollTop(0);
+        $(document).ready(function () {
+            //	        function dontGiveMePopup() {
+            //	            /* nothing to return */
+            //	        }
+            //	        window.onbeforeunload = function () {
+            //	            window.setTimeout(function () { // escape function context
+            //	                window.location = 'contact.html';
+            //	            }, 0);
+            //	            window.onbeforeunload = null;   // necessary to prevent infinite loop that kills the browser
+            ///
+            //	            //return 'Would you like to learn more about The Tech Academy?';
+            //	            // pressing leave will still leave, but the GET may be fired first anyway
+            //	        }
+            function waitThenDoSomething(waitTimeInMS, myAction) {
+                setTimeout(function () {
+                    if (myAction == "displayPopup") {
+                        $('#myModalPopUp').modal('show');
+                    }
+                }, waitTimeInMS); //time in ms to wait before modal dialog box shows up.
+            }
+            function showContactForm(myAction) {
+                $('#myModalPopUpContact').modal('show');
+                $('#myModalPopUp').modal('hide');
+            }
+            waitThenDoSomething(60000, "displayPopup"); //this function waits 60000milliseconds before displaying a popup.
+            $("a").click(function () { window.onbeforeunload = dontGiveMePopup; }); //don't make popup appear just because user clicked our site's hyperlink.
+            document.getElementById("yes-modal-btn").onclick = function () { showContactForm(0,"displayPopup") };//this shows the contact form when yes is clicked on first popUp
+            $("header").hide();
+            $(".text-center").scrollTop(0);
+            $(".container").hide();
+            $("#coverPic").fadeOut(2000);
+            $(".container").fadeIn(4000);
+            $("header").fadeIn(4000);
+            $(".text-center").scrollTop(0);
             $("navText").click(function () { $(this).removeClass("navText")})
-		    $(window).ready(function () { $(window).scroll() });
-		    $(window).scroll(function () {
-		        $(".slideanim").each(function () {
-		            var pos = $(this).offset().top;
+            $(window).ready(function () { $(window).scroll() });
+            $(window).scroll(function () {
+                $(".slideanim").each(function () {
+                    var pos = $(this).offset().top;
 
-		            var winTop = $(window).scrollTop();
+                    var winTop = $(window).scrollTop();
 
-		            if (pos < winTop + $(window).height()) {
-		                $(this).addClass("slide");
-		            }
-		        });
-		    });
+                    if (pos < winTop + $(window).height()) {
+                        $(this).addClass("slide");
+                    }
+                });
+            });
 
 
-		    $('.slideanim').hover(
+            $('.slideanim').hover(
                 function () { $(this).addClass('fadeIn') },
                 function () { $(this).removeClass('fadeIn') });
-	    });
+
+        });
             
 
-	</script>
+        </script>
 </body><iframe src="" style="display: none;"></iframe></html>
