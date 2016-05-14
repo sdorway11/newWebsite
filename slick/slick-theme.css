@@ -3,6 +3,8 @@
 .slick-loading .slick-list
 {
     background: #fff url('./ajax-loader.gif') center center no-repeat;
+    /* added z-index to push slide behind arrows - Josh */
+    z-index: -1;
 }
 
 /* Icons */
@@ -41,6 +43,10 @@
     border: none;
     outline: none;
     background: transparent;
+    /* added z-index to push arrows ahead of slide - Josh */
+    z-index: 1;
+    
+    
 }
 .slick-prev:hover,
 .slick-prev:focus,
@@ -67,51 +73,63 @@
 .slick-prev:before,
 .slick-next:before
 {
-    font-family: 'slick';
-    font-size: 20px;
+	/* changed arrows font family, size, color, and opacity, added shadowing and z-index - Josh*/
+    font-family: FontAwesome;
+    font-size: 60px;
+    text-shadow:
+    -1px -1px 0 black,  
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
     line-height: 1;
-
+    z-index: 1;
+    
     opacity: .75;
-    color: black;
+    color: white;
 
+    
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 .slick-prev
 {
-    left: -25px;
+	/* changed margins to position arrows - Josh*/
+    left: 20%;
 }
 [dir='rtl'] .slick-prev
 {
-    right: -25px;
+    right: 20%;
     left: auto;
 }
 .slick-prev:before
 {
-    content: '←';
+	/*changed text character for arrows -Josh*/
+    content:"\f053";
 }
 [dir='rtl'] .slick-prev:before
 {
-    content: '→';
+    content:"\f054";
 }
 
 .slick-next
 {
-    right: -25px;
+	/* changed margins to position arrows - Josh*/
+    right: 21%;
 }
 [dir='rtl'] .slick-next
 {
     right: auto;
-    left: -25px;
+    left: 21%;
 }
 .slick-next:before
 {
-    content: '→';
+	/*changed text character for arrows -Josh*/
+    content:"\f054";
 }
 [dir='rtl'] .slick-next:before
 {
-    content: '←';
+    content:"\f053";
 }
 
 /* Dots */

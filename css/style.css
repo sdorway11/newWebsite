@@ -990,9 +990,9 @@ div  {
 /* centering slide show*/
 
 .your-class { 
-	/* changed margins from 0px to 18% to fix nav arrows not showing */
-  margin-right: 18%; 
-  margin-left: 18%; // center
+	/* changed margins to fix arrow position - Josh*/
+  margin-right: 0px; 
+  margin-left: 0px; // center
   /*width: 2365px;  small screen the page look centered*/
   text-align:center; 
   /* added margin to top for space between text and slideshow */
