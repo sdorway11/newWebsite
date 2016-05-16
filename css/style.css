@@ -1223,7 +1223,7 @@ color: #495a62;
 .aboutSpacing {
     padding-top: 40px;
 }
-<<<<<<< HEAD
+
 /*Dallin's, sets original color for transition on about*/
 .largerTxt {
     color: #777;
@@ -1242,8 +1242,7 @@ color: #495a62;
     height: 45%;
     float: right;
 }
-=======
 
 /* adding for super sweet fade in effect on about page - Josh */
 div#about-container { display: none; }
->>>>>>> origin/master
+
