@@ -1210,13 +1210,22 @@ color: #495a62;
     margin-top: 5px;
 }
 
-about p {
-    text-size-adjust: 200%;
-}
-
+/*Dallin's, the next two make about better spaced.*/
 .largerTxt p  {
     font-size: 1.1em;
 }
+/*Dallin's*/
 .aboutSpacing {
     padding-top: 40px;
+}
+/*Dallin's, sets original color for transition on about*/
+.largerTxt {
+    color: #777;
+    transition-property: color;
+    transition-duration: .5s;
+    transition-timing-function: linear;
+}
+/*Dallin's, transitions to black*/
+.largerTxt:hover {
+    color: #000;
 }
