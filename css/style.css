@@ -27,6 +27,7 @@ h2, h4{
 #topList h2 {
 	font-size: 110%;
 }
+/*Dallin's, transparency in navbar*/
 .navbar {
     opacity: 0.93;
 }
@@ -182,14 +183,17 @@ h2, h4{
 	text-align: left !important;
 	margin-left: 10px; 
  }
+ /*Dallin's - next three are mine, making the header on the index page interactive*/
 #indexHeader {
      color: #777;
      text-decoration: none;
 }
+/*Dallin's*/
 #indexHeaderText {
     margin: 35px;
     margin-bottom: 10px;
 }
+/*Dallin's*/
 #indexHeaderText:hover {
     animation: scale .5s forwards;
  }
@@ -1183,14 +1187,19 @@ font-size:.9em;
 text-align: center;
 color: #495a62;
 }
+/*Dallin's, keeps text away from edges.*/
 #offEdges {
     margin-left: 20px;
     margin-right: 20px;
 }
+/*Dallin's, takes away gap in index*/
 .noBottom {
     margin-bottom: 12px !important;
 
 }
+/*
+    marg bottom, bottomExtraLine, and Founders by Dallin, for unison among staff page pictures.
+*/
 .margBottom {
     margin-bottom: 40px;
 }
