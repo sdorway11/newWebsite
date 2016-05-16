@@ -34,7 +34,7 @@
 
 <body class="text-center">
 
-    <div class="container">
+    <div class="container" id = "tour-container">
 
         <!--  The justified navigation menu is meant for single line per list item.
     Multiple lines will require custom code not provided by Bootstrap.  -->
@@ -228,6 +228,10 @@ _atrk_opts = { atrk_acct:"jT90m1a8FRh2cN", domain:"learncodinganywhere.com",dyna
     <script type="text/javascript" src="slick/slick.min.js"></script>
     
     <script>
+    	$(document).ready(function() {
+    		$('#tour-container').fadeIn(2000);		
+		});
+		
         $(document).ready(function(){
 		        $('.your-class').slick({
                 dots: true,

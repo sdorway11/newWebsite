@@ -996,6 +996,11 @@ div  {
 	}*/
 
 
+/* tour page css */
+
+/* adding for super sweet fade in effect - Josh */
+div#tour-container { display: none; }
+
 /* centering slide show*/
 
 .your-class { 
@@ -1008,7 +1013,7 @@ div  {
   margin-top: 25px;
 } 
 
-/* end centering slideshow*/
+/* end tour page css */
 
 
 
@@ -1220,3 +1225,6 @@ about p {
 .aboutSpacing {
     padding-top: 40px;
 }
+
+/* adding for super sweet fade in effect on about page - Josh */
+div#about-container { display: none; }
