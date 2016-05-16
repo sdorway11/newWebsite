@@ -458,7 +458,6 @@ footer .row {
     color: rgba(255,255,255,1);
 }
 
-
 footer .footer_nav {
   font-size: .8em;
   list-style-type: none;
@@ -1209,4 +1208,15 @@ color: #495a62;
 .margFounders {
     margin-bottom: 25px;
     margin-top: 5px;
+}
+
+about p {
+    text-size-adjust: 200%;
+}
+
+.largerTxt p  {
+    font-size: 1.1em;
+}
+.aboutSpacing {
+    padding-top: 40px;
 }
