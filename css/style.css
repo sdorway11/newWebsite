@@ -996,6 +996,11 @@ div  {
 	}*/
 
 
+/* tour page css */
+
+/* adding for super sweet fade in effect - Josh */
+div#tour-container { display: none; }
+
 /* centering slide show*/
 
 .your-class { 
@@ -1008,7 +1013,7 @@ div  {
   margin-top: 25px;
 } 
 
-/* end centering slideshow*/
+/* end tour page css */
 
 
 
@@ -1218,6 +1223,7 @@ color: #495a62;
 .aboutSpacing {
     padding-top: 40px;
 }
+<<<<<<< HEAD
 /*Dallin's, sets original color for transition on about*/
 .largerTxt {
     color: #777;
@@ -1229,3 +1235,8 @@ color: #495a62;
 .largerTxt:hover {
     color: #000;
 }
+=======
+
+/* adding for super sweet fade in effect on about page - Josh */
+div#about-container { display: none; }
+>>>>>>> origin/master
