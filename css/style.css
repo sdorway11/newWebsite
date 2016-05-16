@@ -1235,6 +1235,13 @@ color: #495a62;
 .largerTxt:hover {
     color: #000;
 }
+/*Dallin's, dynamic effect on PITC picture*/
+.hideBig {
+    display: none;
+    width: 45% !important;
+    height: 45%;
+    float: right;
+}
 =======
 
 /* adding for super sweet fade in effect on about page - Josh */
