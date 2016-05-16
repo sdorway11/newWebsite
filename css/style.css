@@ -985,7 +985,6 @@ a.btn-lg:active
 	50% {background-color:lavender;}
     100%  {background-color: lavenderblush;}
 }
-
 div  {
     animation-name: textblock;
     animation-duration: 5s;
@@ -1246,3 +1245,24 @@ color: #495a62;
 /* adding for super sweet fade in effect on about page - Josh */
 div#about-container { display: none; }
 
+
+/* 404 page css - Josh*/
+
+#html-404 {
+    position: relative;
+    min-height: 100%;
+}
+#body-404 {
+    margin: 0 0 264px; /* bottom = footer height */
+}
+#footer-404 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 264px;
+    width: 100%;
+}
+
+div#container-404 { display: none; }
+
+/* end 404 css */
