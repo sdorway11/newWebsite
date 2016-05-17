@@ -532,12 +532,41 @@ blockquote {
 .panel-body {
 	font-size: 1.3em;
 }
+/*Dallin's Bad Awesome accodion effects!*/
+.panel-group .panel+.panel {
+    margin-top: 0px !important;
+}
+.panel-group .panel { /*Dallin's*/
+    margin-bottom: 0;
+    border-radius: 0px;
+    border-bottom: none;
+}
+.bottomAccord { /*Dallin's*/
+    border-bottom: 1px solid #ddd !important;
+}
+.panel-heading { /*Dallin's*/
+    padding-bottom: 20px;
+    padding-top: 20px;
+    padding-left: 50px;
+}
+.panel-body { /*Dallin's*/
+    padding: 20px 50px 30px 50px;
+}
+.panel-title:hover { /*Dallin's*/
+    text-decoration: none !important;
+    color: #004271;
+}
+.panel-title a:enabled { /*Dallin's*/
+    text-decoration: none;
+}
+
+
 
 .container {
-    width: 100%; 
+    width: 90%; 
     /*I CHANGED THIS FROM 90% TO 100%*/
     padding: 0px;
-    margin: 0px;
+    margin: 0 auto;
 }
 
 .onlyDisplayOnMobile{
