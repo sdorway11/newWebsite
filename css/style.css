@@ -541,6 +541,10 @@ blockquote {
     border-radius: 0px;
     border-bottom: none;
 }
+.container .panel-group {
+    width: 90%;
+    margin:0 auto;
+}
 .bottomAccord { /*Dallin's*/
     border-bottom: 1px solid #ddd !important;
 }
@@ -563,8 +567,7 @@ blockquote {
 
 
 .container {
-    width: 90%; 
-    /*I CHANGED THIS FROM 90% TO 100%*/
+    width: 100%; 
     padding: 0px;
     margin: 0 auto;
 }
