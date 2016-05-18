@@ -563,13 +563,13 @@ blockquote {
 .panel-title a:enabled { /*Dallin's*/
     text-decoration: none;
 }
-.panel-heading {
+.panel-heading { /*Dallin*/
     background-color: rgba(45, 45, 48, 1) !important;
     color: #fff !important;
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
 }
-.panel-default {
+.panel-default { /*Dallin*/
     border-color: #fff;
 }
 
