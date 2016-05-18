@@ -558,10 +558,19 @@ blockquote {
 }
 .panel-title:hover { /*Dallin's*/
     text-decoration: none !important;
-    color: #004271;
+    color: #D98D2A;
 }
 .panel-title a:enabled { /*Dallin's*/
     text-decoration: none;
+}
+.panel-heading {
+    background-color: rgba(45, 45, 48, 1) !important;
+    color: #fff !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+.panel-default {
+    border-color: #fff;
 }
 
 
