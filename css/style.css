@@ -393,6 +393,7 @@ div.row p{  /*ADDED 2/9/16 TO GET SPACE BETWEEN THE SIDE OF TEXT AND GRID BOX BO
   display: block;
   margin: 0px; /*WAS 10PX AUTO*/
   width: 100%;
+  height: 150%;
 }
 
 
@@ -572,7 +573,33 @@ blockquote {
 .panel-default { /*Dallin*/
     border-color: #fff;
 }
-
+.lineThrough { /*Dallin*/
+    text-decoration: line-through;
+}
+.noDecor { /*Dallin*/
+    text-decoration: none;
+    color: inherit;
+}
+.row3tile2 { /*Dallin*/
+    text-decoration: none;
+    color: inherit;
+    text-align: justify;
+}
+.sixty { /*Dallin*/
+    font-size: 60%;
+}
+#MessagePopUp { /*Dallin*/
+    text-align: left;
+}
+.indexIframe { /*Dallin*/
+    width: 1px; 
+    height: 1px; 
+    position: absolute; 
+    top: -100px;
+}
+.noscript { /*Dallin*/
+    display: none;
+}
 
 
 .container {
