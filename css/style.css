@@ -547,7 +547,7 @@ blockquote {
     margin:0 auto;
 }
 .bottomAccord { /*Dallin's*/
-    border-bottom: 1px solid #ddd !important;
+    border-bottom: 1px solid white !important;
 }
 .panel-heading { /*Dallin's*/
     padding-bottom: 20px;
