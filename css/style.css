@@ -621,8 +621,9 @@ blockquote {
     font-weight: bold;
     letter-spacing: 4px;
 }
-
-
+.taLogo {
+    width:200px;
+}
 
 
 .container {
